@@ -1,13 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
 export function Login() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/dashboard');
+    setError('');
+    setLoading(true);
+
+    try {
+      const res = await fetch('http://localhost:3000/api/vendor-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      
+      const data = await res.json();
+
+      if (res.ok) {
+        // Save vendor to localStorage
+        localStorage.setItem('vendor', JSON.stringify(data));
+        navigate('/dashboard');
+      } else {
+        setError(data.error || 'Login failed');
+      }
+    } catch (err) {
+      setError('Network error. Is the portal backend running?');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -18,6 +44,8 @@ export function Login() {
           <p className="text-secondary">Sign in to your vendor account</p>
         </div>
         
+        {error && <div style={{ color: '#ef4444', marginBottom: '16px', textAlign: 'center', fontSize: '0.9rem', backgroundColor: '#fee2e2', padding: '8px', borderRadius: '4px' }}>{error}</div>}
+
         <form onSubmit={handleLogin} className="login-form">
           <div className="form-group">
             <label htmlFor="email">Email Address</label>
@@ -26,18 +54,19 @@ export function Login() {
               id="email" 
               className="input-field" 
               placeholder="vendor@company.com" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required 
             />
           </div>
           
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Password (Optional for Demo)</label>
             <input 
               type="password" 
               id="password" 
               className="input-field" 
               placeholder="••••••••" 
-              required 
             />
           </div>
           
@@ -49,8 +78,8 @@ export function Login() {
             <a href="#" className="forgot-password">Forgot password?</a>
           </div>
           
-          <button type="submit" className="btn btn-primary login-btn">
-            Sign In
+          <button type="submit" className="btn btn-primary login-btn" disabled={loading}>
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
         

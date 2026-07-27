@@ -10,16 +10,34 @@ export function Dashboard() {
     { label: 'Win Rate', value: '68%', icon: TrendingUp, color: 'text-primary' },
   ];
 
-  const recentEvents = [
-    { id: 1, title: 'Office Supplies Bulk Order 2026', client: 'Acme Corp', deadline: '2 days left', status: 'Invited' },
-    { id: 2, title: 'Cloud Infrastructure Upgrade', client: 'TechGlobal', deadline: '5 days left', status: 'Bid Submitted' },
-    { id: 3, title: 'Annual Marketing Services', client: 'Retail Giant', deadline: '1 week left', status: 'Invited' },
-  ];
+  const [recentEvents, setRecentEvents] = React.useState<any[]>([]);
+  const [vendor, setVendor] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    const v = localStorage.getItem('vendor');
+    if (v) {
+      const parsedVendor = JSON.parse(v);
+      setVendor(parsedVendor);
+      
+      fetch(`http://localhost:3000/api/vendor-events?email=${parsedVendor.email}`)
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            setRecentEvents(data);
+          }
+        })
+        .catch(err => console.error(err));
+    } else {
+      window.location.href = '/login';
+    }
+  }, []);
+
+  if (!vendor) return <div>Loading...</div>;
 
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <h1 className="page-title">Welcome back, Tech Corp!</h1>
+        <h1 className="page-title">Welcome back, {vendor.name}!</h1>
         <p className="text-secondary">Here's an overview of your bidding activity.</p>
       </div>
 
@@ -32,7 +50,7 @@ export function Dashboard() {
                 <Icon className={stat.color} size={24} />
               </div>
               <div className="stat-details">
-                <h3>{stat.value}</h3>
+                <h3>{stat.label === 'Active Invitations' ? recentEvents.length : stat.value}</h3>
                 <p>{stat.label}</p>
               </div>
             </div>
@@ -48,23 +66,29 @@ export function Dashboard() {
           </div>
           
           <div className="event-list">
-            {recentEvents.map(event => (
-              <div key={event.id} className="event-item">
-                <div className="event-info">
-                  <h4>{event.title}</h4>
-                  <p className="text-secondary">{event.client}</p>
+            {recentEvents.length === 0 ? (
+              <div style={{ padding: '24px', textAlign: 'center', color: '#64748b' }}>No events found for your account.</div>
+            ) : (
+              recentEvents.map((event: any) => (
+                <div key={event.id} className="event-item">
+                  <div className="event-info">
+                    <h4>{event.title || event.refId}</h4>
+                    <p className="text-secondary">{event.account || 'Internal'}</p>
+                  </div>
+                  <div className="event-meta">
+                    <span className={`status-badge status-invited`}>
+                      Invited
+                    </span>
+                    <span className="deadline text-secondary">
+                      {new Date(event.createdAt).toLocaleDateString()}
+                    </span>
+                    <button className="icon-btn">
+                      <ArrowRight size={20} />
+                    </button>
+                  </div>
                 </div>
-                <div className="event-meta">
-                  <span className={`status-badge ${event.status === 'Invited' ? 'status-invited' : 'status-submitted'}`}>
-                    {event.status}
-                  </span>
-                  <span className="deadline text-secondary">{event.deadline}</span>
-                  <button className="icon-btn">
-                    <ArrowRight size={20} />
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
