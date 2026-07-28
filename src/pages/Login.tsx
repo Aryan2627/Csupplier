@@ -23,8 +23,9 @@ export function Login() {
       const data = await res.json();
 
       if (res.ok) {
-        // Save vendor to localStorage
-        localStorage.setItem('vendor', JSON.stringify(data));
+        // Save vendor and token to localStorage
+        localStorage.setItem('vendor', JSON.stringify(data.vendor));
+        localStorage.setItem('token', data.token);
         navigate('/dashboard');
       } else {
         setError(data.error || 'Login failed');

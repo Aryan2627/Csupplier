@@ -8,11 +8,17 @@ export function Events() {
 
   useEffect(() => {
     const v = localStorage.getItem('vendor');
-    if (v) {
+    const token = localStorage.getItem('token');
+    
+    if (v && token) {
       const parsedVendor = JSON.parse(v);
       setVendor(parsedVendor);
       
-      fetch(`http://localhost:3000/api/vendor-events?email=${parsedVendor.email}`)
+      fetch(`http://localhost:3000/api/vendor-events`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
         .then(res => res.json())
         .then(data => {
           if (Array.isArray(data)) {
