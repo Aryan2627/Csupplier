@@ -4,8 +4,9 @@ import { Layout } from './components/Layout';
 import { Dashboard } from './pages/Dashboard';
 import { Login } from './pages/Login';
 
+import { Events } from './pages/Events';
+
 // Dummy components for now
-const Events = () => <div className="glass-panel" style={{ padding: '2rem', height: '100%' }}><h1>Events Listing (Coming Soon)</h1></div>;
 const Bids = () => <div className="glass-panel" style={{ padding: '2rem', height: '100%' }}><h1>Active Bids (Coming Soon)</h1></div>;
 const Settings = () => <div className="glass-panel" style={{ padding: '2rem', height: '100%' }}><h1>Settings</h1></div>;
 
