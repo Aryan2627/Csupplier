@@ -6,6 +6,7 @@ import './Dashboard.css';
 export function Events() {
   const [events, setEvents] = useState<any[]>([]);
   const [vendor, setVendor] = useState<any>(null);
+  const [errorMsg, setErrorMsg] = useState<string>('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,13 +22,24 @@ export function Events() {
           'Authorization': `Bearer ${token}`
         }
       })
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) {
+            setErrorMsg(`Backend returned ${res.status} ${res.statusText}`);
+            return [];
+          }
+          return res.json();
+        })
         .then(data => {
           if (Array.isArray(data)) {
             setEvents(data);
+          } else if (data.error) {
+            setErrorMsg(data.error);
           }
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+          console.error(err);
+          setErrorMsg(`Network or CORS error: ${err.message}`);
+        });
     } else {
       window.location.href = '/login';
     }
@@ -56,7 +68,11 @@ export function Events() {
         </div>
 
         <div className="event-list">
-          {events.length === 0 ? (
+          {errorMsg ? (
+            <div style={{ padding: '48px', textAlign: 'center', color: '#ef4444', backgroundColor: '#fee2e2', borderRadius: '8px' }}>
+              <p><strong>Error fetching events:</strong> {errorMsg}</p>
+            </div>
+          ) : events.length === 0 ? (
             <div style={{ padding: '48px', textAlign: 'center', color: '#64748b' }}>
               <p>You haven't been invited to any events yet.</p>
             </div>

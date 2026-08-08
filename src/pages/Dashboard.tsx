@@ -12,6 +12,7 @@ export function Dashboard() {
 
   const [recentEvents, setRecentEvents] = React.useState<any[]>([]);
   const [vendor, setVendor] = React.useState<any>(null);
+  const [errorMsg, setErrorMsg] = React.useState<string>('');
 
   React.useEffect(() => {
     const v = localStorage.getItem('vendor');
@@ -26,13 +27,24 @@ export function Dashboard() {
           'Authorization': `Bearer ${token}`
         }
       })
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) {
+            setErrorMsg(`Backend returned ${res.status}`);
+            return [];
+          }
+          return res.json();
+        })
         .then(data => {
           if (Array.isArray(data)) {
             setRecentEvents(data);
+          } else if (data.error) {
+            setErrorMsg(data.error);
           }
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+          console.error(err);
+          setErrorMsg(`Network or CORS error`);
+        });
     } else {
       window.location.href = '/login';
     }
@@ -72,7 +84,9 @@ export function Dashboard() {
           </div>
           
           <div className="event-list">
-            {recentEvents.length === 0 ? (
+            {errorMsg ? (
+              <div style={{ padding: '24px', textAlign: 'center', color: '#ef4444', backgroundColor: '#fee2e2', borderRadius: '8px' }}>Error: {errorMsg}</div>
+            ) : recentEvents.length === 0 ? (
               <div style={{ padding: '24px', textAlign: 'center', color: '#64748b' }}>No events found for your account.</div>
             ) : (
               recentEvents.map((event: any) => (
