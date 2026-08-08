@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Search, Filter } from 'lucide-react';
 import './Dashboard.css';
 
 export function Events() {
   const [events, setEvents] = useState<any[]>([]);
   const [vendor, setVendor] = useState<any>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const v = localStorage.getItem('vendor');
@@ -73,7 +75,11 @@ export function Events() {
                   <span className="status-badge status-invited" style={{ padding: '6px 12px', fontSize: '0.85rem' }}>
                     Invited
                   </span>
-                  <button className="btn btn-primary" style={{ padding: '8px 24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <button 
+                    onClick={() => navigate(`/events/${event.id}`)}
+                    className="btn btn-primary" 
+                    style={{ padding: '8px 24px', display: 'flex', alignItems: 'center', gap: '8px' }}
+                  >
                     View Details <ArrowRight size={16} />
                   </button>
                 </div>
