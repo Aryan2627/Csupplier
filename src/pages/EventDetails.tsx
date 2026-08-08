@@ -12,9 +12,9 @@ export function EventDetails() {
   const [token, setToken] = useState('');
   const [vendorInfo, setVendorInfo] = useState<any>(null);
   
-  // Dynamic form state { field_key: value }
   const [formData, setFormData] = useState<Record<string, string | number>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [timeLeft, setTimeLeft] = useState<string>('');
 
   useEffect(() => {
     const t = localStorage.getItem('token'); // Csupplier uses 'token'
@@ -126,6 +126,39 @@ export function EventDetails() {
     }
   }, [formData, templateFields]);
 
+  // Live countdown timer
+  useEffect(() => {
+    if (!event || !event.endTime) {
+      setTimeLeft('No End Time');
+      return;
+    }
+
+    const calculateTimeLeft = () => {
+      const now = new Date().getTime();
+      const end = new Date(event.endTime).getTime();
+      const difference = end - now;
+
+      if (difference <= 0) {
+        return 'Event Ended';
+      }
+
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      if (days > 0) return `${days}d ${hours}h ${minutes}m`;
+      return `${hours}h ${minutes}m ${seconds}s`;
+    };
+
+    setTimeLeft(calculateTimeLeft());
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [event]);
+
   const handleInputChange = (key: string, value: string) => {
     const numVal = parseFloat(value);
     setFormData(prev => ({
@@ -213,6 +246,13 @@ export function EventDetails() {
               <div style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #f1f5f9' }}>
                 <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '4px' }}>Published Date</div>
                 <div style={{ fontWeight: 500 }}>{new Date(event.createdAt).toLocaleDateString()}</div>
+              </div>
+              <div style={{ padding: '12px', backgroundColor: '#fff7ed', borderRadius: '8px', border: '1px solid #ffedd5', gridColumn: 'span 2', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <Clock size={24} color="#ea580c" />
+                <div>
+                  <div style={{ fontSize: '0.75rem', color: '#c2410c', marginBottom: '2px', fontWeight: 600 }}>Time Remaining</div>
+                  <div style={{ fontWeight: 700, fontSize: '1.25rem', color: '#ea580c' }}>{timeLeft}</div>
+                </div>
               </div>
             </div>
           </div>
