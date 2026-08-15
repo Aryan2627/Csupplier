@@ -32,21 +32,21 @@ export function EventDetails() {
     setToken(t);
     if (v) setVendorInfo(JSON.parse(v));
 
-    fetch(`http://localhost:3000/api/products`)
+    fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/products`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setProducts(data);
       })
       .catch(console.error);
 
-    fetch(`http://localhost:3000/api/exchange-rates`)
+    fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/exchange-rates`)
       .then(res => res.json())
       .then(data => {
         if (data && !data.error) setExchangeRates(data);
       })
       .catch(console.error);
     
-    fetch(`http://localhost:3000/api/vendor-events/${params.id}`, {
+    fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/vendor-events/${params.id}`, {
       headers: { 'Authorization': `Bearer ${t}` }
     })
       .then(res => {
@@ -78,7 +78,7 @@ export function EventDetails() {
             }
           } catch(e) {}
         }
-        fetch(`http://localhost:3000/api/vendor-bids?eventId=${data.id}`, {
+        fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/vendor-bids?eventId=${data.id}`, {
           headers: { 'Authorization': `Bearer ${t}` }
         })
           .then(res => res.json())
@@ -213,7 +213,7 @@ export function EventDetails() {
         }
       }
 
-      const res = await fetch('http://localhost:3000/api/vendor-bids', {
+      const res = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/vendor-bids`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({
@@ -242,7 +242,7 @@ export function EventDetails() {
     if (!event || event.feedbackMode !== 'Rank Based' || !vendorInfo) return;
 
     const pollRank = () => {
-      fetch(`http://localhost:3000/api/vendor-rank?eventId=${event.id}&vendorName=${encodeURIComponent(vendorInfo.name)}`)
+      fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/vendor-rank?eventId=${event.id}&vendorName=${encodeURIComponent(vendorInfo.name)}`)
         .then(res => res.json())
         .then(data => {
           if (data.rank) {

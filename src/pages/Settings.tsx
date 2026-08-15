@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { User, Mail, Phone, MapPin, Building, ShieldCheck, Tag } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Building, ShieldCheck, Tag, Briefcase } from 'lucide-react';
 
 export function Settings() {
   const [vendor, setVendor] = useState<any>(null);

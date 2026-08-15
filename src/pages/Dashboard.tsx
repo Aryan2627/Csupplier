@@ -22,7 +22,7 @@ export function Dashboard() {
       const parsedVendor = JSON.parse(v);
       setVendor(parsedVendor);
       
-      fetch(`http://localhost:3000/api/vendor-events`, {
+      fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/vendor-events`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
