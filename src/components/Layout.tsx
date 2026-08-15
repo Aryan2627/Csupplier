@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, CalendarDays, Gavel, Settings, LogOut, Bell, User } from 'lucide-react';
+import { LayoutDashboard, CalendarDays, Gavel, Settings, LogOut, Bell, User, ShoppingBag } from 'lucide-react';
 import './Layout.css';
 
 interface LayoutProps {
@@ -9,11 +9,23 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   const location = useLocation();
+  const [vendorName, setVendorName] = React.useState('Supplier');
+
+  React.useEffect(() => {
+    try {
+      const v = localStorage.getItem('vendor');
+      if (v) {
+        const parsed = JSON.parse(v);
+        if (parsed.name) setVendorName(parsed.name);
+      }
+    } catch(e) {}
+  }, []);
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Events', path: '/events', icon: CalendarDays },
     { name: 'Active Bids', path: '/bids', icon: Gavel },
+    { name: 'Purchase Orders', path: '/orders', icon: ShoppingBag },
     { name: 'Settings', path: '/settings', icon: Settings },
   ];
 
@@ -64,7 +76,7 @@ export function Layout({ children }: LayoutProps) {
               <div className="avatar">
                 <User size={20} />
               </div>
-              <span className="user-name">Tech Corp Ltd.</span>
+              <span className="user-name">{vendorName}</span>
             </div>
           </div>
         </header>
