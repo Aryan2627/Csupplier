@@ -14,7 +14,11 @@ export function Login() {
     setLoading(true);
 
     try {
-      const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3000').replace(/\/+$/, '');
+      let rawUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3000').replace(/\/+$/, '');
+      if (!rawUrl.startsWith('http')) {
+        rawUrl = `https://${rawUrl}`;
+      }
+      const baseUrl = rawUrl;
       const res = await fetch(`${baseUrl}/api/vendor-auth`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
