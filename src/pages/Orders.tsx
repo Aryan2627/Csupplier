@@ -22,7 +22,7 @@ export function Orders() {
       const parsedVendor = JSON.parse(v);
       setVendorInfo(parsedVendor);
       
-      fetch(`\${'https://cpanel-swart.vercel.app'}/api/vendor-pos?vendorName=${encodeURIComponent(parsedVendor.name)}`, {
+      fetch(`https://cpanel-swart.vercel.app/api/vendor-pos?vendorName=${encodeURIComponent(parsedVendor.name)}`, {
         headers: { 'Authorization': `Bearer ${t}` }
       })
         .then(res => {

@@ -22,7 +22,7 @@ export function Dashboard() {
       const parsedVendor = JSON.parse(v);
       setVendor(parsedVendor);
       
-      fetch(`\${'https://cpanel-swart.vercel.app'}/api/vendor-events`, {
+      fetch(`https://cpanel-swart.vercel.app/api/vendor-events`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
