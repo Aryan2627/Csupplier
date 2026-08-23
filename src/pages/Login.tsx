@@ -14,7 +14,7 @@ export function Login() {
     setLoading(true);
 
     try {
-      let rawUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3000').replace(/\/+$/, '');
+      let rawUrl = ('https://cpanel-swart.vercel.app').replace(/\/+$/, '');
       if (!rawUrl.startsWith('http')) {
         rawUrl = `https://${rawUrl}`;
       }
