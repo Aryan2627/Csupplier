@@ -1,0 +1,19 @@
+const fs = require('fs');
+const path = require('path');
+function walk(dir) {
+    fs.readdirSync(dir).forEach(file => {
+        let fullPath = path.join(dir, file);
+        if (fs.statSync(fullPath).isDirectory()) {
+            walk(fullPath);
+        } else if (fullPath.endsWith('.tsx') || fullPath.endsWith('.ts')) {
+            let content = fs.readFileSync(fullPath, 'utf8');
+            if (content.includes('VITE_API_URL')) {
+                content = content.replace(/import\.meta\.env\.VITE_API_URL\s*\|\|\s*'http:\/\/localhost:3000'/g, "'https://cpanel-swart.vercel.app'");
+                content = content.replace(/import\.meta\.env\.VITE_API_URL/g, "'https://cpanel-swart.vercel.app'");
+                fs.writeFileSync(fullPath, content);
+                console.log('Fixed ' + fullPath);
+            }
+        }
+    });
+}
+walk('./src');
