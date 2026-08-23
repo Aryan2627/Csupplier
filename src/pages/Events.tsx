@@ -24,7 +24,7 @@ export function Events() {
           'Authorization': `Bearer ${token}`
         }
       })
-        .then(res => {
+        .then(async res => {
           if (res.status === 401) {
             localStorage.removeItem('token');
             localStorage.removeItem('vendor');
@@ -35,12 +35,19 @@ export function Events() {
             setErrorMsg(`Backend returned ${res.status} ${res.statusText}`);
             return [];
           }
-          return res.json();
+          
+          const contentType = res.headers.get("content-type");
+          if (contentType && contentType.indexOf("application/json") !== -1) {
+            return res.json();
+          } else {
+            const text = await res.text();
+            throw new Error(`API URL misconfigured. Received HTML instead of JSON. Check VITE_API_URL environment variable on Vercel.`);
+          }
         })
         .then(data => {
           if (Array.isArray(data)) {
             setEvents(data);
-          } else if (data.error) {
+          } else if (data && data.error) {
             setErrorMsg(data.error);
           }
         })
