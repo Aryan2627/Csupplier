@@ -25,18 +25,23 @@ export function Login() {
         body: JSON.stringify({ email })
       });
       
-      const data = await res.json();
-
-      if (res.ok) {
-        // Save vendor and token to localStorage
-        localStorage.setItem('vendor', JSON.stringify(data.vendor));
-        localStorage.setItem('token', data.token);
-        navigate('/dashboard');
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        const data = await res.json();
+        if (res.ok) {
+          // Save vendor and token to localStorage
+          localStorage.setItem('vendor', JSON.stringify(data.vendor));
+          localStorage.setItem('token', data.token);
+          navigate('/dashboard');
+        } else {
+          setError(data.error || 'Login failed');
+        }
       } else {
-        setError(data.error || 'Login failed');
+        const text = await res.text();
+        setError(`Received HTML instead of JSON. If the database is asleep, wait 20 seconds and try again. URL fetched: ${baseUrl}`);
       }
-    } catch (err) {
-      setError('Network error. Is the portal backend running?');
+    } catch (err: any) {
+      setError(`Network error: ${err.message}. If the database is asleep, wait 20s. Check your VITE_API_URL.`);
     } finally {
       setLoading(false);
     }
