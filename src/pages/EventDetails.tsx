@@ -286,81 +286,75 @@ export function EventDetails() {
   if (error) return <div style={{ padding: '24px', color: '#ef4444' }}>{error}</div>;
   if (!event) return null;
 
+  const getEventTypeBadge = (type: string) => {
+    const t = (type || '').toLowerCase();
+    if (t.includes('auction')) return <span style={{ padding: '6px 14px', background: '#fef2f2', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: '24px', fontWeight: 700, fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '6px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>🔨 LIVE AUCTION</span>;
+    if (t.includes('tech')) return <span style={{ padding: '6px 14px', background: '#f0fdf4', color: '#16a34a', border: '1px solid #86efac', borderRadius: '24px', fontWeight: 700, fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '6px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>🔬 TECHNICAL EVENT</span>;
+    return <span style={{ padding: '6px 14px', background: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe', borderRadius: '24px', fontWeight: 700, fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '6px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>📝 STANDARD RFQ</span>;
+  };
+
   // Group by sections for display
   const sections = Array.from(new Set(templateFields.map((f: any) => f.section || 'General')));
 
   return (
     <div style={{ backgroundColor: '#f8fafc', color: '#333', minHeight: '100%', padding: '24px', fontFamily: 'system-ui, sans-serif' }}>
       
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-        <button onClick={() => navigate('/events')} style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
-          <ArrowLeft size={20} color="#475569" />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '32px', backgroundColor: '#fff', padding: '24px 32px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #e2e8f0' }}>
+        <button onClick={() => navigate('/events')} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 1px 2px rgba(0,0,0,0.02)' }}>
+          <ArrowLeft size={22} color="#475569" />
         </button>
-        <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 600, color: '#0f172a', margin: 0 }}>{event.title}</h1>
-          <p style={{ color: '#64748b', margin: '4px 0 0 0', fontSize: '0.875rem' }}>{event.refId} • {event.type}</p>
+        <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '10px' }}>
+            <h1 style={{ fontSize: '1.8rem', fontWeight: 700, color: '#0f172a', margin: 0, letterSpacing: '-0.5px' }}>{event.title}</h1>
+            {getEventTypeBadge(event.type)}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '24px', color: '#64748b', fontSize: '0.95rem', fontWeight: 500 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><FileText size={16} /> Ref: {event.refId}</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Clock size={16} color="#ea580c" /> Time Left: <strong style={{ color: '#ea580c' }}>{timeLeft}</strong></span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Hash size={16} /> {event.itemsCount} Items</span>
+          </div>
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
+      <div style={{ display: 'flex', gap: '32px', alignItems: 'flex-start' }}>
         
         {/* Main Content Area */}
-        <div style={{ flex: '2', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          
-          <div style={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-            <h2 style={{ margin: '0 0 16px 0', fontSize: '1.1rem', color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <FileText size={18} color="#2563eb" /> Event Requirements
-            </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              <div style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #f1f5f9' }}>
-                <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '4px' }}>Items Count</div>
-                <div style={{ fontWeight: 500 }}>{event.itemsCount} Items</div>
+        <div style={{ flex: '2', display: 'flex', flexDirection: 'column', gap: '32px' }}>
+             <div style={{ backgroundColor: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '32px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', paddingBottom: '24px', borderBottom: '2px dashed #f1f5f9' }}>
+              <div>
+                <h2 style={{ margin: 0, fontSize: '1.4rem', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 700 }}>
+                  <Calculator size={24} color="#2563eb" /> Put Your Details
+                </h2>
+                <p style={{ margin: '8px 0 0 0', color: '#64748b', fontSize: '0.9rem' }}>Please fill out the technical and commercial requirements below.</p>
               </div>
-              <div style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #f1f5f9' }}>
-                <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '4px' }}>Published Date</div>
-                <div style={{ fontWeight: 500 }}>{new Date(event.createdAt).toLocaleDateString()}</div>
-              </div>
-              <div style={{ padding: '12px', backgroundColor: '#fff7ed', borderRadius: '8px', border: '1px solid #ffedd5', gridColumn: 'span 2', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <Clock size={24} color="#ea580c" />
-                <div>
-                  <div style={{ fontSize: '0.75rem', color: '#c2410c', marginBottom: '2px', fontWeight: 600 }}>Time Remaining</div>
-                  <div style={{ fontWeight: 700, fontSize: '1.25rem', color: '#ea580c' }}>{timeLeft}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-              <h2 style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Calculator size={18} color="#2563eb" /> Bid Submission Form
-              </h2>
               {enableESG && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#16a34a', backgroundColor: '#f0fdf4', padding: '6px 12px', borderRadius: '6px', border: '1px solid #bbf7d0', fontSize: '0.8rem', fontWeight: 600 }}>
-                  <Leaf size={14} /> ESG Tracked Bid
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#16a34a', backgroundColor: '#f0fdf4', padding: '8px 16px', borderRadius: '20px', border: '1px solid #bbf7d0', fontSize: '0.85rem', fontWeight: 700, boxShadow: '0 2px 4px rgba(22, 163, 74, 0.1)' }}>
+                  <Leaf size={16} /> ESG Tracked
                 </div>
               )}
             </div>
 
             {templateFields.length > 0 ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                 {sections.map((section: any) => {
                   const sectionFields = templateFields.filter((f: any) => (f.section || 'General') === section);
                   
                   // Filter out fields hidden by conditional logic
                   const visibleFields = sectionFields.filter((f: any) => {
-                    if (!f.dependsOn) return true;
-                    return String(formData[f.dependsOn]) === f.dependsOnValue;
+                    if (!f.dependsOn || !f.dependsOn.field) return true;
+                    return String(formData[f.dependsOn.field]) === String(f.dependsOn.value);
                   });
 
                   if (visibleFields.length === 0) return null;
 
                   return (
-                    <div key={section} style={{ border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden' }}>
-                      <div style={{ padding: '12px 16px', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0', fontWeight: 600, color: '#334155', fontSize: '0.9rem' }}>
-                        {section}
+                    <div key={section} style={{ background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)' }}>
+                      <div style={{ padding: '16px 24px', backgroundColor: '#fff', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ width: '4px', height: '20px', backgroundColor: '#2563eb', borderRadius: '4px' }} />
+                        <h3 style={{ margin: 0, fontWeight: 700, color: '#1e293b', fontSize: '1.05rem', letterSpacing: '-0.3px' }}>{section}</h3>
                       </div>
-                      <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                      <div style={{ padding: '24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
                         {visibleFields.map((field: any) => {
                           const isReadOnly = field.role !== 'Participant';
                           
@@ -386,7 +380,7 @@ export function EventDetails() {
                                   value={formData[field.key] || ''} 
                                   onChange={e => handleInputChange(field.key, e.target.value)}
                                   disabled={isReadOnly}
-                                  style={{ width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', backgroundColor: isReadOnly ? '#f8fafc' : '#fff', fontSize: '0.95rem', outline: 'none' }}
+                                  style={{ width: '100%', padding: '14px', borderRadius: '8px', border: '1px solid #cbd5e1', backgroundColor: isReadOnly ? '#f8fafc' : '#fff', fontSize: '0.95rem', outline: 'none', transition: 'border-color 0.2s', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)' }}
                                 >
                                   <option value="">Select an option...</option>
                                   {field.dropdownOptions?.split(',').map((opt: string, i: number) => {
@@ -399,7 +393,7 @@ export function EventDetails() {
                                   value={formData[field.key] || ''} 
                                   onChange={e => handleInputChange(field.key, e.target.value)}
                                   disabled={isReadOnly}
-                                  style={{ width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', backgroundColor: isReadOnly ? '#f8fafc' : '#fff', fontSize: '0.95rem', outline: 'none' }}
+                                  style={{ width: '100%', padding: '14px', borderRadius: '8px', border: '1px solid #cbd5e1', backgroundColor: isReadOnly ? '#f8fafc' : '#fff', fontSize: '0.95rem', outline: 'none', transition: 'border-color 0.2s', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)' }}
                                 >
                                   <option value="">Select a product...</option>
                                   {products.map(p => (
@@ -444,9 +438,9 @@ export function EventDetails() {
                                   onChange={(e) => handleInputChange(field.key, e.target.value)}
                                   readOnly={isReadOnly}
                                   style={{ 
-                                    width: '100%', padding: '12px 16px', fontSize: '0.95rem',
-                                    border: isReadOnly ? '1px solid #e2e8f0' : '1px solid #cbd5e1', 
-                                    borderRadius: '6px', outline: 'none',
+                                    width: '100%', padding: '14px 16px', fontSize: '0.95rem',
+                                    border: isReadOnly ? '1px solid #e2e8f0' : '1px solid #cbd5e1',
+                                    borderRadius: '8px', outline: 'none', transition: 'all 0.2s', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)',
                                     backgroundColor: isReadOnly ? '#f8fafc' : '#ffffff',
                                     color: isReadOnly ? '#475569' : '#0f172a'
                                   }}
@@ -463,9 +457,9 @@ export function EventDetails() {
                                     readOnly={isReadOnly}
                                     placeholder={field.validationRule ? `Validating ${field.validationRule}...` : ''}
                                     style={{ 
-                                      width: '100%', padding: `12px 16px 12px ${field.type === 'number' ? '40px' : '16px'}`, fontSize: '0.95rem',
-                                      border: isReadOnly ? '1px solid #e2e8f0' : '1px solid #cbd5e1', 
-                                      borderRadius: '6px', outline: 'none',
+                                      width: '100%', padding: `14px 16px 14px ${field.type === 'number' ? '40px' : '16px'}`, fontSize: '0.95rem',
+                                      border: isReadOnly ? '1px solid #e2e8f0' : '1px solid #cbd5e1',
+                                      borderRadius: '8px', outline: 'none', transition: 'all 0.2s', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)',
                                       backgroundColor: isReadOnly ? '#f8fafc' : '#ffffff',
                                       color: isReadOnly ? '#475569' : '#0f172a'
                                     }}
@@ -634,3 +628,5 @@ export function EventDetails() {
     </div>
   );
 }
+
+
