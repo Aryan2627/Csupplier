@@ -13,6 +13,8 @@ export function EventDetails() {
   const [token, setToken] = useState('');
   const [vendorInfo, setVendorInfo] = useState<any>(null);
   const [existingBid, setExistingBid] = useState<any>(null);
+  const [chatHistory, setChatHistory] = useState<any[]>([]);
+  const [chatMessage, setChatMessage] = useState('');
   
   const [formData, setFormData] = useState<Record<string, string | number>>({});
   const [currency, setCurrency] = useState('USD');
@@ -85,6 +87,11 @@ export function EventDetails() {
           .then(bidData => {
             if (bidData && Object.keys(bidData).length > 0) {
               setExistingBid(bidData);
+              if (bidData.chatHistory) {
+                try {
+                  setChatHistory(typeof bidData.chatHistory === 'string' ? JSON.parse(bidData.chatHistory) : bidData.chatHistory);
+                } catch(e) {}
+              }
               if (bidData.templateData) {
                 try {
                   const parsed = JSON.parse(bidData.templateData);
@@ -176,6 +183,22 @@ export function EventDetails() {
     const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 60000);
     return () => clearInterval(timer);
   }, [event]);
+
+  const handleSendMessage = async () => {
+    if (!chatMessage.trim() || !existingBid) return;
+    const newMsg = { id: Date.now(), sender: vendorInfo?.name || 'Vendor', type: 'text', msg: chatMessage, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
+    const updatedHistory = [...chatHistory, newMsg];
+    setChatHistory(updatedHistory);
+    setChatMessage('');
+    
+    try {
+      await fetch(`https://cpanel-swart.vercel.app/api/vendor-bids`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ id: existingBid.id, chatHistory: updatedHistory })
+      });
+    } catch(err) { console.error(err); }
+  };
 
   const handleInputChange = (key: string, value: string) => {
     const numVal = parseFloat(value);
@@ -565,11 +588,47 @@ export function EventDetails() {
               }}
             >
               {isSubmitting ? 'Submitting...' : <><Save size={18} /> {existingBid ? 'Revise Bid' : 'Submit Bid'}</>}
-            </button>
-          </div>
+              </button>
+            </div>
 
+            {/* Negotiation Chat Box */}
+            {existingBid && (
+              <div style={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
+                <h3 style={{ margin: '0 0 16px 0', fontSize: '1rem', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>💬 Direct Negotiation</h3>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '300px', overflowY: 'auto', marginBottom: '16px', padding: '16px', border: '1px solid #f1f5f9', borderRadius: '8px', backgroundColor: '#f8fafc' }}>
+                  {chatHistory.length === 0 ? (
+                    <div style={{ textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem', padding: '24px 0' }}>No messages yet.</div>
+                  ) : (
+                    chatHistory.map((msg: any) => (
+                      <div key={msg.id} style={{ display: 'flex', flexDirection: 'column', alignItems: msg.sender === 'You' || msg.sender === 'Client' ? 'flex-start' : 'flex-end' }}>
+                        <div style={{ fontSize: '0.7rem', color: '#64748b', marginBottom: '4px' }}>{msg.sender === (vendorInfo?.name || 'Vendor') ? 'You' : 'Client'} • {msg.time}</div>
+                        {msg.type === 'counter_offer' ? (
+                          <div style={{ backgroundColor: '#fff', border: '1px solid #10b981', padding: '12px', borderRadius: '8px', width: '80%' }}>
+                            <div style={{ fontWeight: 600, color: '#0f172a', marginBottom: '8px', fontSize: '0.9rem' }}>Formal Counter Offer</div>
+                            <div style={{ fontSize: '0.85rem', color: '#475569', marginBottom: '4px' }}><strong>Price:</strong> ${msg.offerDetails.price}</div>
+                            <div style={{ fontSize: '0.85rem', color: '#475569', marginBottom: '4px' }}><strong>Expires:</strong> {msg.offerDetails.expiry}</div>
+                            <div style={{ fontSize: '0.85rem', color: '#475569', fontStyle: 'italic' }}>"{msg.offerDetails.reason}"</div>
+                          </div>
+                        ) : (
+                          <div style={{ padding: '10px 14px', backgroundColor: msg.sender === (vendorInfo?.name || 'Vendor') ? '#2563eb' : '#fff', color: msg.sender === (vendorInfo?.name || 'Vendor') ? '#fff' : '#0f172a', border: msg.sender === (vendorInfo?.name || 'Vendor') ? 'none' : '1px solid #cbd5e1', borderRadius: '12px', maxWidth: '85%', fontSize: '0.9rem', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
+                            {msg.msg}
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+                
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <input type="text" placeholder="Type a message..." value={chatMessage} onChange={e => setChatMessage(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSendMessage()} style={{ flex: 1, padding: '10px', border: '1px solid #cbd5e1', borderRadius: '6px', outline: 'none' }} />
+                  <button onClick={handleSendMessage} style={{ padding: '10px 16px', backgroundColor: '#0f172a', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}>Send</button>
+                </div>
+              </div>
+            )}
+  
+          </div>
         </div>
-      </div>
     </div>
   );
 }
