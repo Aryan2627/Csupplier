@@ -432,6 +432,7 @@ export function EventDetails() {
                                     type="number"
                                     value={formData[field.key] || ''}
                                     onChange={e => handleInputChange(field.key, e.target.value)}
+                                    onWheel={e => e.currentTarget.blur()}
                                     placeholder="Your Markup"
                                     style={{ flex: 1, padding: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.95rem', outline: 'none' }}
                                   />
@@ -458,6 +459,7 @@ export function EventDetails() {
                                     type={field.type === 'number' || field.type === 'percentage' ? 'number' : 'text'}
                                     value={formData[field.key] || ''}
                                     onChange={(e) => handleInputChange(field.key, e.target.value)}
+                                    onWheel={e => (field.type === 'number' || field.type === 'percentage') && e.currentTarget.blur()}
                                     readOnly={isReadOnly}
                                     placeholder={field.validationRule ? `Validating ${field.validationRule}...` : ''}
                                     style={{ 
