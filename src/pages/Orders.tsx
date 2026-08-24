@@ -48,6 +48,24 @@ export function Orders() {
     }
   }, [navigate]);
 
+  const handleUpdateStatus = async (orderId: string, newStatus: string) => {
+    try {
+      const t = localStorage.getItem('token');
+      const res = await fetch('https://cpanel-swart.vercel.app/api/vendor-pos', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${t}` },
+        body: JSON.stringify({ id: orderId, status: newStatus })
+      });
+      if (res.ok) {
+        setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+      } else {
+        alert('Failed to update PO status');
+      }
+    } catch (e) {
+      alert('Network error');
+    }
+  };
+
   if (loading) {
     return (
       <div style={{ padding: '24px', display: 'flex', justifyContent: 'center', color: '#64748b' }}>
@@ -94,14 +112,14 @@ export function Orders() {
                     <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{new Date(order.createdAt).toLocaleDateString()}</div>
                   </div>
                 </div>
-                <div style={{ padding: '4px 10px', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 600, backgroundColor: order.status === 'Draft' ? '#fef3c7' : '#ecfdf5', color: order.status === 'Draft' ? '#b45309' : '#059669', border: `1px solid ${order.status === 'Draft' ? '#fde68a' : '#a7f3d0'}` }}>
+                <div style={{ padding: '4px 10px', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 600, backgroundColor: order.status === 'Pending Vendor' || order.status === 'Draft' ? '#fef3c7' : order.status === 'Rejected' ? '#fef2f2' : '#ecfdf5', color: order.status === 'Pending Vendor' || order.status === 'Draft' ? '#b45309' : order.status === 'Rejected' ? '#ef4444' : '#059669', border: `1px solid ${order.status === 'Pending Vendor' || order.status === 'Draft' ? '#fde68a' : order.status === 'Rejected' ? '#fca5a5' : '#a7f3d0'}` }}>
                   {order.status}
                 </div>
               </div>
               
               <h3 style={{ margin: '0 0 16px 0', fontSize: '1.05rem', color: '#334155' }}>{order.title}</h3>
               
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid #f1f5f9', paddingTop: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid #f1f5f9', paddingTop: '16px', marginBottom: order.status === 'Pending Vendor' ? '16px' : '0' }}>
                 <div>
                   <div style={{ fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Amount</div>
                   <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#10b981' }}>
@@ -112,6 +130,17 @@ export function Orders() {
                   View Details <ChevronRight size={16} />
                 </button>
               </div>
+
+              {order.status === 'Pending Vendor' && (
+                <div style={{ display: 'flex', gap: '8px', borderTop: '1px solid #f1f5f9', paddingTop: '16px' }}>
+                  <button onClick={(e) => { e.stopPropagation(); handleUpdateStatus(order.id, 'Approved'); }} style={{ flex: 1, padding: '10px', backgroundColor: '#16a34a', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 600, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}>
+                    <CheckCircle2 size={16} /> Approve PO
+                  </button>
+                  <button onClick={(e) => { e.stopPropagation(); handleUpdateStatus(order.id, 'Rejected'); }} style={{ flex: 1, padding: '10px', backgroundColor: '#fff', color: '#ef4444', border: '1px solid #fca5a5', borderRadius: '6px', fontWeight: 600, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}>
+                    Reject
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
