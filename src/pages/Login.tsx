@@ -142,6 +142,7 @@ export function Login() {
               {loading ? 'Sending OTP...' : 'Send OTP'}
             </button>
           </form>
+          </>
         ) : (
           <form onSubmit={handleVerifyOTP} className="login-form">
             <div className="form-group">
