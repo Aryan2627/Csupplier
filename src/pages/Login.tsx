@@ -126,12 +126,12 @@ export function Login() {
 
             <form onSubmit={handleRequestOTP} className="login-form">
               <div className="form-group">
-              <label htmlFor="email">Email Address</label>
+              <label htmlFor="email">Mobile Number or Email</label>
               <input 
-                type="email" 
+                type="text" 
                 id="email" 
                 className="input-field" 
-                placeholder="vendor@company.com" 
+                placeholder="vendor@company.com or +1..." 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required 
@@ -192,3 +192,4 @@ export function Login() {
     </div>
   );
 }
+
