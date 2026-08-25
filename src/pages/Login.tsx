@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ShieldCheck, TrendingUp, Users } from 'lucide-react';
 import './Login.css';
 
 export function Login() {
@@ -86,110 +87,152 @@ export function Login() {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-box glass-panel">
-        <div className="login-header">
-          <h1 className="text-gradient">VendorPortal</h1>
-          <p className="text-secondary">Secure Passwordless Authentication</p>
+    <div className="login-split-container">
+      {/* LEFT SIDE - Enterprise Branding */}
+      <div className="login-hero-side">
+        <div className="hero-content">
+          <div className="hero-logo">
+            <div className="logo-box">PG</div>
+            <h2>ProcGen</h2>
+          </div>
+          <h1 className="hero-title">Empowering the Global Supplier Network</h1>
+          <p className="hero-subtitle">Connect with top buyers, submit bids, and manage purchase orders all in one unified, intelligent platform.</p>
+          
+          <div className="hero-features">
+            <div className="feature-item">
+              <div className="feature-icon"><TrendingUp size={24} /></div>
+              <div>
+                <h3>Real-time Bidding</h3>
+                <p>Submit quotes instantly and negotiate effectively.</p>
+              </div>
+            </div>
+            <div className="feature-item">
+              <div className="feature-icon"><ShieldCheck size={24} /></div>
+              <div>
+                <h3>Secure Transactions</h3>
+                <p>Enterprise-grade security for all your contracts.</p>
+              </div>
+            </div>
+            <div className="feature-item">
+              <div className="feature-icon"><Users size={24} /></div>
+              <div>
+                <h3>Seamless Collaboration</h3>
+                <p>Communicate directly with buyers to clarify requirements.</p>
+              </div>
+            </div>
+          </div>
         </div>
-        
-        {error && <div style={{ color: '#ef4444', marginBottom: '16px', textAlign: 'center', fontSize: '0.9rem', backgroundColor: '#fee2e2', padding: '8px', borderRadius: '4px' }}>{error}</div>}
+        <div className="hero-footer">
+          <p>© 2026 ProcGen Inc. All rights reserved.</p>
+        </div>
+      </div>
 
-        {step === 'request' ? (
-          <>
-            <button 
-              type="button" 
-              onClick={() => { window.location.href = `${getBaseUrl()}/api/auth/google?source=vendor`; }}
-              style={{
-                width: '100%', padding: '12px', borderRadius: '8px',
-                border: '1px solid #e2e8f0', backgroundColor: '#fff',
-                color: '#0f172a', fontSize: '0.95rem', fontWeight: '600',
-                cursor: 'pointer', display: 'flex', alignItems: 'center',
-                justifyContent: 'center', gap: '10px', marginBottom: '16px',
-                transition: 'box-shadow 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.08)'
-              }}
-            >
-              <svg width="20" height="20" viewBox="0 0 48 48">
-                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-              </svg>
-              Continue with Google
-            </button>
+      {/* RIGHT SIDE - Form */}
+      <div className="login-form-side">
+        <div className="login-box">
+          <div className="login-header">
+            <h1 className="text-gradient">Vendor Portal</h1>
+            <p className="text-secondary">Secure Passwordless Authentication</p>
+          </div>
+          
+          {error && <div style={{ color: '#ef4444', marginBottom: '16px', textAlign: 'center', fontSize: '0.9rem', backgroundColor: '#fee2e2', padding: '12px', borderRadius: '8px', fontWeight: 500 }}>{error}</div>}
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-              <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }} />
-              <span style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: '500' }}>OR</span>
-              <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }} />
-            </div>
-
-            <form onSubmit={handleRequestOTP} className="login-form">
-              <div className="form-group">
-              <label htmlFor="email">Mobile Number or Email</label>
-              <input 
-                type="text" 
-                id="email" 
-                className="input-field" 
-                placeholder="vendor@company.com or +1..." 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required 
-              />
-            </div>
-            
-            <button type="submit" className="btn btn-primary login-btn" disabled={loading || !email}>
-              {loading ? 'Sending OTP...' : 'Send OTP'}
-            </button>
-          </form>
-          </>
-        ) : (
-          <form onSubmit={handleVerifyOTP} className="login-form">
-            <div className="form-group">
-              <label htmlFor="otp">Enter 6-digit OTP sent to {email}</label>
-              
-              {previewUrl && (
-                <div style={{ margin: '8px 0', padding: '12px', backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '8px', fontSize: '0.85rem' }}>
-                  <strong>Dev Mode:</strong> <a href={previewUrl} target="_blank" rel="noreferrer" style={{ color: '#2563eb', textDecoration: 'underline' }}>View OTP Email in Ethereal</a>
-                </div>
-              )}
-
-              <input 
-                type="text" 
-                id="otp" 
-                className="input-field" 
-                placeholder="· · · · · ·" 
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                maxLength={6}
-                style={{ textAlign: 'center', fontSize: '1.5rem', letterSpacing: '4px' }}
-                required 
-              />
-            </div>
-            
-            <button type="submit" className="btn btn-primary login-btn" disabled={loading || otp.length < 4}>
-              {loading ? 'Verifying...' : 'Sign In'}
-            </button>
-            
-            <div style={{ textAlign: 'center', marginTop: '16px' }}>
+          {step === 'request' ? (
+            <>
               <button 
                 type="button" 
-                onClick={() => setStep('request')}
-                style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '0.875rem', cursor: 'pointer', textDecoration: 'underline' }}
+                onClick={() => { window.location.href = `${getBaseUrl()}/api/auth/google?source=vendor`; }}
+                style={{
+                  width: '100%', padding: '14px', borderRadius: '12px',
+                  border: '1px solid #e2e8f0', backgroundColor: '#fff',
+                  color: '#0f172a', fontSize: '0.95rem', fontWeight: '600',
+                  cursor: 'pointer', display: 'flex', alignItems: 'center',
+                  justifyContent: 'center', gap: '10px', marginBottom: '24px',
+                  transition: 'all 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+                }}
               >
-                Change Email
+                <svg width="20" height="20" viewBox="0 0 48 48">
+                  <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                  <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                  <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                  <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+                Continue with Google
               </button>
-            </div>
-          </form>
-        )}
-        
-        <div className="login-footer">
-          <p className="text-secondary">
-            Don't have an account? <a href="#" className="text-primary">Register</a>
-          </p>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+                <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }} />
+                <span style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: '600', letterSpacing: '0.5px' }}>OR EMAIL / SMS</span>
+                <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }} />
+              </div>
+
+              <form onSubmit={handleRequestOTP} className="login-form">
+                <div className="form-group">
+                <label htmlFor="email">Mobile Number or Email</label>
+                <input 
+                  type="text" 
+                  id="email" 
+                  className="input-field" 
+                  placeholder="vendor@company.com or +1..." 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required 
+                  style={{ padding: '14px', borderRadius: '10px' }}
+                />
+              </div>
+              
+              <button type="submit" className="btn btn-primary login-btn" disabled={loading || !email} style={{ padding: '14px', borderRadius: '10px', fontSize: '1rem', marginTop: '8px' }}>
+                {loading ? 'Sending OTP...' : 'Send Login Code'}
+              </button>
+            </form>
+            </>
+          ) : (
+            <form onSubmit={handleVerifyOTP} className="login-form">
+              <div className="form-group">
+                <label htmlFor="otp" style={{ textAlign: 'center', marginBottom: '8px' }}>Enter 6-digit OTP sent to {email}</label>
+                
+                {previewUrl && (
+                  <div style={{ margin: '16px 0', padding: '12px', backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '8px', fontSize: '0.85rem', textAlign: 'center' }}>
+                    <strong>Dev Mode:</strong> <a href={previewUrl} target="_blank" rel="noreferrer" style={{ color: '#2563eb', textDecoration: 'underline' }}>View OTP Here</a>
+                  </div>
+                )}
+
+                <input 
+                  type="text" 
+                  id="otp" 
+                  className="input-field" 
+                  placeholder="0 0 0 0 0 0" 
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                  maxLength={6}
+                  style={{ textAlign: 'center', fontSize: '2rem', letterSpacing: '8px', padding: '16px', borderRadius: '12px', fontWeight: 700 }}
+                  required 
+                />
+              </div>
+              
+              <button type="submit" className="btn btn-primary login-btn" disabled={loading || otp.length < 6} style={{ padding: '14px', borderRadius: '10px', fontSize: '1rem', marginTop: '16px' }}>
+                {loading ? 'Verifying...' : 'Secure Sign In'}
+              </button>
+              
+              <div style={{ textAlign: 'center', marginTop: '24px' }}>
+                <button 
+                  type="button" 
+                  onClick={() => setStep('request')}
+                  style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '0.9rem', cursor: 'pointer', fontWeight: 500 }}
+                >
+                  Change Email or Mobile Number
+                </button>
+              </div>
+            </form>
+          )}
+          
+          <div className="login-footer" style={{ marginTop: '32px' }}>
+            <p className="text-secondary">
+              Want to join our supplier network? <a href="#" className="text-primary">Apply Here</a>
+            </p>
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
