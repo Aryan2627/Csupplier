@@ -17,7 +17,7 @@ export function EventDetails() {
   const [chatMessage, setChatMessage] = useState('');
   
   const [formData, setFormData] = useState<Record<string, string | number>>({});
-  const [currency, setCurrency] = useState('USD');
+  const [currency, setCurrency] = useState('INR');
   const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [timeLeft, setTimeLeft] = useState<string>('');
@@ -221,7 +221,7 @@ export function EventDetails() {
         totalAmount = Object.values(formData).reduce((acc: number, val: any) => acc + (parseFloat(val) || 0), 0);
       }
 
-      const baseCurrency = event.baseCurrency || 'USD';
+      const baseCurrency = event.baseCurrency || 'INR';
       const exchangeRate = exchangeRates[currency] && exchangeRates[baseCurrency] 
         ? exchangeRates[baseCurrency] / exchangeRates[currency] 
         : 1.0;
@@ -479,7 +479,7 @@ export function EventDetails() {
                   const totalAmount = totalField ? (parseFloat(formData[totalField.key] as string) || 0) : 
                                      Object.values(formData).reduce((acc: number, val: any) => acc + (parseFloat(val) || 0), 0);
                   
-                  const baseCurrency = event.baseCurrency || 'USD';
+                  const baseCurrency = event.baseCurrency || 'INR';
                   const exchangeRate = exchangeRates[currency] && exchangeRates[baseCurrency] 
                     ? exchangeRates[baseCurrency] / exchangeRates[currency] 
                     : 1.0;
@@ -536,21 +536,9 @@ export function EventDetails() {
             <h3 style={{ margin: '0 0 16px 0', fontSize: '1rem', color: '#0f172a' }}>Submit Your Bid</h3>
             
             <div style={{ marginBottom: '24px' }}>
-              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#475569', marginBottom: '8px' }}>Bidding Currency</label>
-              <select 
-                value={currency} 
-                onChange={e => setCurrency(e.target.value)}
-                style={{ width: '100%', padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', backgroundColor: '#fff', outline: 'none' }}
-              >
-                <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="GBP">GBP (£)</option>
-                <option value="INR">INR (₹)</option>
-                <option value="JPY">JPY (¥)</option>
-                <option value="AUD">AUD (A$)</option>
-              </select>
+              
               <div style={{ marginTop: '8px', fontSize: '0.75rem', color: '#64748b' }}>
-                Buyer Evaluation Currency: <strong style={{color: '#0f172a'}}>{event.baseCurrency || 'USD'}</strong>
+                Buyer Evaluation Currency: <strong style={{color: '#0f172a'}}>{event.baseCurrency || 'INR'}</strong>
               </div>
             </div>
 
@@ -566,7 +554,7 @@ export function EventDetails() {
               <div style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '16px', fontSize: '0.85rem' }}>
                 <span style={{ color: '#64748b' }}>Last Quoted Price:</span>
                 <div style={{ fontWeight: 700, color: '#1e293b', fontSize: '1.1rem' }}>
-                  {existingBid.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {event.baseCurrency || 'USD'}
+                  {existingBid.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {event.baseCurrency || 'INR'}
                 </div>
               </div>
             )}
