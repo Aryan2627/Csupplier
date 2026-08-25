@@ -23,7 +23,7 @@ export function Login() {
   const getBaseUrl = () => {
     let rawUrl = ('https://cpanel-swart.vercel.app').replace(/\/+$/, '');
     if (!rawUrl.startsWith('http')) {
-      rawUrl = \https://\\;
+      rawUrl = 'https://' + rawUrl;
     }
     return rawUrl;
   };
@@ -35,7 +35,7 @@ export function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch(\\/api/vendor-auth\, {
+      const res = await fetch(`/api/vendor-auth`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, action: 'request' })
@@ -49,7 +49,7 @@ export function Login() {
         setError(data.error || 'Failed to request OTP');
       }
     } catch (err: any) {
-      setError(\Network error: \.\);
+      setError('Network error');
     } finally {
       setLoading(false);
     }
@@ -62,7 +62,7 @@ export function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch(\\/api/vendor-auth\, {
+      const res = await fetch(`/api/vendor-auth`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, action: 'verify', otp })
@@ -77,7 +77,7 @@ export function Login() {
         setError(data.error || 'Invalid OTP');
       }
     } catch (err: any) {
-      setError(\Network error: \.\);
+      setError('Network error');
     } finally {
       setLoading(false);
     }
@@ -98,7 +98,7 @@ export function Login() {
             <button 
               type="button" 
               className="google-btn"
-              onClick={() => { window.location.href = \\/api/auth/google?source=vendor\; }}
+              onClick={() => { window.location.href = `${getBaseUrl()}/api/auth/google?source=vendor`; }}
             >
               <svg width="20" height="20" viewBox="0 0 48 48">
                 <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
