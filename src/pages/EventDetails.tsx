@@ -262,7 +262,7 @@ export function EventDetails() {
   };
 
   useEffect(() => {
-    if (!event || event.feedbackMode !== 'Rank Based' || !vendorInfo) return;
+    if (!event || (event.feedbackMode !== 'Rank Based' && event.type !== 'Rank based') || !vendorInfo) return;
 
     const pollRank = () => {
       fetch(`https://cpanel-swart.vercel.app/api/vendor-rank?eventId=${event.id}&vendorName=${encodeURIComponent(vendorInfo.name)}`)
