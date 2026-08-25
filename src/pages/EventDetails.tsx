@@ -320,9 +320,9 @@ export function EventDetails() {
 
   const getEventTypeBadge = (type: string) => {
     const t = (type || '').toLowerCase();
-    if (t.includes('auction')) return <span style={{ padding: '6px 14px', background: '#fef2f2', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: '24px', fontWeight: 700, fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '6px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>🔨 LIVE AUCTION</span>;
-    if (t.includes('tech')) return <span style={{ padding: '6px 14px', background: '#f0fdf4', color: '#16a34a', border: '1px solid #86efac', borderRadius: '24px', fontWeight: 700, fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '6px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>🔬 TECHNICAL EVENT</span>;
-    return <span style={{ padding: '6px 14px', background: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe', borderRadius: '24px', fontWeight: 700, fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '6px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>📝 STANDARD RFQ</span>;
+    if (t.includes('auction')) return <span style={{ padding: '6px 14px', background: '#fef2f2', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: '24px', fontWeight: 700, fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '6px', letterSpacing: '0.5px', textTransform: 'uppercase' }}> LIVE AUCTION</span>;
+    if (t.includes('tech')) return <span style={{ padding: '6px 14px', background: '#f0fdf4', color: '#16a34a', border: '1px solid #86efac', borderRadius: '24px', fontWeight: 700, fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '6px', letterSpacing: '0.5px', textTransform: 'uppercase' }}> TECHNICAL EVENT</span>;
+    return <span style={{ padding: '6px 14px', background: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe', borderRadius: '24px', fontWeight: 700, fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '6px', letterSpacing: '0.5px', textTransform: 'uppercase' }}> STANDARD RFQ</span>;
   };
 
   // Group by sections for display
@@ -522,7 +522,7 @@ export function EventDetails() {
                     <div style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px solid #e2e8f0' }}>
                       {rankInfo && (
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px', backgroundColor: rankInfo.rank === 1 ? '#f0fdf4' : '#eff6ff', border: `2px solid ${rankInfo.rank === 1 ? '#22c55e' : '#3b82f6'}`, borderRadius: '12px', marginBottom: '24px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', animation: 'pulse 2s infinite' }}>
-                          <span style={{ fontSize: '1.5rem' }}>{rankInfo.rank === 1 ? '🏆' : '📊'}</span>
+                          <span style={{ fontSize: '1.5rem' }}>{rankInfo.rank === 1 ? '' : ''}</span>
                           <div>
                             <div style={{ fontSize: '1.1rem', fontWeight: 800, color: rankInfo.rank === 1 ? '#15803d' : '#1d4ed8' }}>
                               You are currently Rank #{rankInfo.rank}
@@ -610,7 +610,7 @@ export function EventDetails() {
             {/* Negotiation Chat Box */}
             {existingBid && (
               <div style={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
-                <h3 style={{ margin: '0 0 16px 0', fontSize: '1rem', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>💬 Direct Negotiation</h3>
+                <h3 style={{ margin: '0 0 16px 0', fontSize: '1rem', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}> Direct Negotiation</h3>
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '300px', overflowY: 'auto', marginBottom: '16px', padding: '16px', border: '1px solid #f1f5f9', borderRadius: '8px', backgroundColor: '#f8fafc' }}>
                   {chatHistory.length === 0 ? (
