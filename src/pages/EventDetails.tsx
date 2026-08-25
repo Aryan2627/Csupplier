@@ -200,6 +200,38 @@ export function EventDetails() {
     } catch(err) { console.error(err); }
   };
 
+  
+  const handleAcceptCounterOffer = async (msg: any) => {
+    if (!existingBid) return;
+    const newMsg = { id: Date.now(), sender: vendorInfo?.name || 'Vendor', type: 'text', msg: `? I have accepted your counter offer of ${msg.offerDetails.price}`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
+    const updatedHistory = [...chatHistory, newMsg];
+    setChatHistory(updatedHistory);
+    
+    try {
+      await fetch(`https://cpanel-swart.vercel.app/api/vendor-bids`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ id: existingBid.id, chatHistory: updatedHistory })
+      });
+      alert('Counter offer accepted. The buyer has been notified.');
+    } catch(err) { console.error(err); }
+  };
+
+  const handleRejectCounterOffer = async (msg: any) => {
+    if (!existingBid) return;
+    const newMsg = { id: Date.now(), sender: vendorInfo?.name || 'Vendor', type: 'text', msg: `? I have rejected your counter offer of ${msg.offerDetails.price}`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
+    const updatedHistory = [...chatHistory, newMsg];
+    setChatHistory(updatedHistory);
+    
+    try {
+      await fetch(`https://cpanel-swart.vercel.app/api/vendor-bids`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ id: existingBid.id, chatHistory: updatedHistory })
+      });
+    } catch(err) { console.error(err); }
+  };
+
   const handleInputChange = (key: string, value: string) => {
     const numVal = parseFloat(value);
     setFormData(prev => ({
