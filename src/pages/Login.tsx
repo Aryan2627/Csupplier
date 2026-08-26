@@ -35,7 +35,7 @@ export function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch(`/api/vendor-auth`, {
+      const res = await fetch(`${getBaseUrl()}/api/vendor-auth`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, action: 'request' })
@@ -62,7 +62,7 @@ export function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch(`/api/vendor-auth`, {
+      const res = await fetch(`${getBaseUrl()}/api/vendor-auth`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, action: 'verify', otp })
