@@ -125,6 +125,48 @@ export function EventDetails() {
     return [];
   }, [event]);
 
+  
+  // Auto-calculate formula fields on mount if they haven't been calculated yet
+  useEffect(() => {
+    if (templateFields.length > 0 && Object.keys(formData).length > 0) {
+      let hasCalc = false;
+      const next = { ...formData };
+      let changed = false;
+      
+      templateFields.forEach((f: any) => {
+        if (f.role?.toLowerCase() === 'calculation' && f.formula) {
+           hasCalc = true;
+           const groupId = f._sourceItemId || 'default';
+           const groupFields = templateFields.filter((tf: any) => (tf._sourceItemId || 'default') === groupId);
+           try {
+             let expr = f.formula;
+             const sortedFields = [...groupFields].sort((a, b) => (b.originalKey || b.key).length - (a.originalKey || a.key).length);
+             sortedFields.forEach((gf: any) => {
+               const vName = gf.originalKey || gf.key;
+               if (expr.includes(vName)) {
+                 let v = 0;
+                 if (gf.role?.toLowerCase() === 'creator') v = Number(gf.defaultValue) || 0;
+                 else v = Number(next[gf.key]) || 0;
+                 expr = expr.replace(new RegExp(`\\b${vName}\\b`, 'g'), v.toString());
+               }
+             });
+             // eslint-disable-next-line no-new-func
+             const result = new Function('return ' + expr)();
+             const newResult = Number(result) || 0;
+             if (next[f.key] !== newResult) {
+                 next[f.key] = newResult;
+                 changed = true;
+             }
+           } catch(e) {}
+        }
+      });
+      if (changed) {
+        setFormData(next);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [templateFields]); // Only run when template fields change (which happens on event load)
+
   const enableESG = templateFields.some((f: any) => f.enableESG);
 
   useEffect(() => {
@@ -249,8 +291,26 @@ export function EventDetails() {
       if (formData['total_value']) {
         totalAmount = parseFloat(formData['total_value'] as string);
       }
-      if (!totalAmount) {
-        totalAmount = Object.values(formData).reduce((acc: number, val: any) => acc + (parseFloat(val) || 0), 0);
+            if (!totalAmount) {
+        let calcAmount = 0;
+        const groupedFields = new Map<any, any[]>();
+        templateFields.forEach((f: any) => {
+            const g = f._sourceItemId || 'default';
+            if (!groupedFields.has(g)) groupedFields.set(g, []);
+            groupedFields.get(g)!.push(f);
+        });
+        
+        groupedFields.forEach(fields => {
+          const calcFields = fields.filter(f => f.role?.toLowerCase() === 'calculation' && f.type === 'number');
+          const targetFields = calcFields.length > 0 ? calcFields : fields.filter(f => f.role?.toLowerCase() === 'participant' && f.type === 'number');
+          
+          targetFields.forEach(f => {
+            if (formData[f.key]) {
+              calcAmount += parseFloat(formData[f.key] as string) || 0;
+            }
+          });
+        });
+        totalAmount = calcAmount;
       }
 
       const baseCurrency = event.baseCurrency || 'INR';
