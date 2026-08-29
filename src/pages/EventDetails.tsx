@@ -691,8 +691,12 @@ export function EventDetails() {
                             <div style={{ fontWeight: 600, color: '#0f172a', marginBottom: '8px', fontSize: '0.9rem' }}>Formal Counter Offer</div>
                             <div style={{ fontSize: '0.85rem', color: '#475569', marginBottom: '4px' }}><strong>Price:</strong> ${msg.offerDetails.price}</div>
                             <div style={{ fontSize: '0.85rem', color: '#475569', marginBottom: '4px' }}><strong>Expires:</strong> {msg.offerDetails.expiry}</div>
-                            <div style={{ fontSize: '0.85rem', color: '#475569', fontStyle: 'italic' }}>"{msg.offerDetails.reason}"</div>
-                          </div>
+                            <div style={{ fontSize: '0.85rem', color: '#475569', fontStyle: 'italic', marginBottom: '12px' }}>"{msg.offerDetails.reason}"</div>
+                              <div style={{ display: 'flex', gap: '8px' }}>
+                                <button onClick={() => handleAcceptCounterOffer(msg)} style={{ padding: '6px 12px', backgroundColor: '#10b981', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}>Accept</button>
+                                <button onClick={() => handleRejectCounterOffer(msg)} style={{ padding: '6px 12px', backgroundColor: '#ef4444', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}>Reject</button>
+                              </div>
+                            </div>
                         ) : (
                           <div style={{ padding: '10px 14px', backgroundColor: msg.sender === (vendorInfo?.name || 'Vendor') ? '#2563eb' : '#fff', color: msg.sender === (vendorInfo?.name || 'Vendor') ? '#fff' : '#0f172a', border: msg.sender === (vendorInfo?.name || 'Vendor') ? 'none' : '1px solid #cbd5e1', borderRadius: '12px', maxWidth: '85%', fontSize: '0.9rem', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
                             {msg.msg}
