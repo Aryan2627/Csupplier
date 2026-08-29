@@ -76,7 +76,7 @@ export function Login() {
         localStorage.setItem('token', data.token);
         localStorage.setItem('vendor_info', JSON.stringify(data.vendor));
         localStorage.setItem('vendor', JSON.stringify(data.vendor));
-        window.location.href = data.vendor.status === 'Onboarding in Progress' ? '/vendor/onboarding' : '/vendor';
+        window.location.href = (data.vendor.status === 'Onboarding in Progress' || data.vendor.status === 'Pending Onboarding' || data.vendor.status === 'Approval Pending') ? '/vendor/onboarding' : '/vendor';
       } else {
         setError(data.error || 'Invalid OTP');
       }
@@ -105,7 +105,7 @@ export function Login() {
         localStorage.setItem('token', data.token);
         localStorage.setItem('vendor_info', JSON.stringify(data.vendor));
         localStorage.setItem('vendor', JSON.stringify(data.vendor));
-        window.location.href = data.vendor.status === 'Onboarding in Progress' ? '/vendor/onboarding' : '/vendor';
+        window.location.href = (data.vendor.status === 'Onboarding in Progress' || data.vendor.status === 'Pending Onboarding' || data.vendor.status === 'Approval Pending') ? '/vendor/onboarding' : '/vendor';
       } else {
         setError(data.error || 'Invalid credentials');
       }
