@@ -8,6 +8,7 @@ import { Events } from './pages/Events';
 import { EventDetails } from './pages/EventDetails';
 import { Settings } from './pages/Settings';
 import { Orders } from './pages/Orders';
+import { Onboarding } from './pages/Onboarding';
 
 // Dummy components for now
 const Bids = () => <div className="glass-panel" style={{ padding: '2rem', height: '100%' }}><h1>Active Bids (Coming Soon)</h1></div>;
@@ -25,6 +26,8 @@ function App() {
         <Route path="/bids" element={<Layout><Bids /></Layout>} />
         <Route path="/orders" element={<Layout><Orders /></Layout>} />
         <Route path="/settings" element={<Layout><Settings /></Layout>} />
+        <Route path="/vendor/onboarding" element={<Layout><Onboarding /></Layout>} />
+        <Route path="/onboarding" element={<Layout><Onboarding /></Layout>} />
         
         {/* Redirect root to dashboard */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
