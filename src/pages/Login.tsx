@@ -119,8 +119,9 @@ export function Login() {
   return (
     <div className="login-simple-container">
       <div className="login-simple-card">
-        <div className="login-header">
-          <h2>ProcGen Supplier</h2>
+        <div className="login-header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+          <img src="/logo.webp" alt="ProcGen Logo" style={{ height: '48px', objectFit: 'contain' }} />
+          <h2 style={{ display: 'none' }}>ProcGen Supplier</h2>
           <p>Sign in to your account</p>
         </div>
         
