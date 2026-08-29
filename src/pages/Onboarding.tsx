@@ -47,7 +47,7 @@ export function Onboarding() {
     setError('');
     
     try {
-      const token = localStorage.getItem('vendor_token');
+      const token = localStorage.getItem('token');
       const res = await fetch(`${getBaseUrl()}/api/vendor-onboarding`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },

@@ -17,6 +17,7 @@ export function Login() {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('vendor_token');
     if (token) {
+      localStorage.setItem('token', token);
       localStorage.setItem('vendor_token', token);
       window.location.href = '/vendor';
     }
