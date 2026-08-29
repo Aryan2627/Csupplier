@@ -72,8 +72,9 @@ export function Login() {
       
       const data = await res.json();
       if (res.ok) {
-        localStorage.setItem('vendor_token', data.token);
+        localStorage.setItem('token', data.token);
         localStorage.setItem('vendor_info', JSON.stringify(data.vendor));
+        localStorage.setItem('vendor', JSON.stringify(data.vendor));
         window.location.href = data.vendor.status === 'Onboarding in Progress' ? '/vendor/onboarding' : '/vendor';
       } else {
         setError(data.error || 'Invalid OTP');
@@ -100,8 +101,9 @@ export function Login() {
       
       const data = await res.json();
       if (res.ok) {
-        localStorage.setItem('vendor_token', data.token);
+        localStorage.setItem('token', data.token);
         localStorage.setItem('vendor_info', JSON.stringify(data.vendor));
+        localStorage.setItem('vendor', JSON.stringify(data.vendor));
         window.location.href = data.vendor.status === 'Onboarding in Progress' ? '/vendor/onboarding' : '/vendor';
       } else {
         setError(data.error || 'Invalid credentials');
@@ -114,98 +116,138 @@ export function Login() {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
+    <div className="login-simple-container">
+      <div className="login-simple-card">
         <div className="login-header">
-          <div className="logo">Csupplier</div>
-          <h2>Welcome Back</h2>
-          <p>Login to manage your bids and orders</p>
+          <h2>ProcGen Supplier</h2>
+          <p>Sign in to your account</p>
         </div>
+        
+        {error && <div className="error-banner">{error}</div>}
 
         <div style={{ display: 'flex', gap: '8px', marginBottom: '24px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '8px' }}>
           <button 
             type="button"
             onClick={() => { setLoginMethod('otp'); setError(''); }}
-            style={{ flex: 1, padding: '8px', borderRadius: '6px', border: 'none', background: loginMethod === 'otp' ? '#fff' : 'transparent', color: loginMethod === 'otp' ? '#0f172a' : '#64748b', fontWeight: loginMethod === 'otp' ? 600 : 400, boxShadow: loginMethod === 'otp' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', cursor: 'pointer' }}
+            style={{ flex: 1, padding: '8px', borderRadius: '6px', border: 'none', background: loginMethod === 'otp' ? '#fff' : 'transparent', color: loginMethod === 'otp' ? '#0f172a' : '#64748b', fontWeight: loginMethod === 'otp' ? 600 : 400, boxShadow: loginMethod === 'otp' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', cursor: 'pointer', transition: 'all 0.2s' }}
           >
             OTP Login
           </button>
           <button 
             type="button"
             onClick={() => { setLoginMethod('password'); setError(''); }}
-            style={{ flex: 1, padding: '8px', borderRadius: '6px', border: 'none', background: loginMethod === 'password' ? '#fff' : 'transparent', color: loginMethod === 'password' ? '#0f172a' : '#64748b', fontWeight: loginMethod === 'password' ? 600 : 400, boxShadow: loginMethod === 'password' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', cursor: 'pointer' }}
+            style={{ flex: 1, padding: '8px', borderRadius: '6px', border: 'none', background: loginMethod === 'password' ? '#fff' : 'transparent', color: loginMethod === 'password' ? '#0f172a' : '#64748b', fontWeight: loginMethod === 'password' ? 600 : 400, boxShadow: loginMethod === 'password' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', cursor: 'pointer', transition: 'all 0.2s' }}
           >
-            Password (Onboarding)
+            Password
           </button>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
-
         {loginMethod === 'otp' ? (
           step === 'request' ? (
-            <form onSubmit={handleRequestOTP} className="login-form">
-              <div className="form-group">
-                <label>Email or Phone</label>
-                <input
-                  type="text"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email or phone"
-                  required
-                />
-              </div>
-              <button type="submit" className="primary-btn" disabled={loading}>
-                {loading ? 'Sending...' : 'Send Login Code'}
+            <>
+              <button 
+                type="button" 
+                className="google-btn"
+                onClick={() => { window.location.href = `${getBaseUrl()}/api/auth/google?source=vendor`; }}
+              >
+                <svg width="20" height="20" viewBox="0 0 48 48">
+                  <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                  <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                  <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                  <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+                Continue with Google
               </button>
-            </form>
+
+              <div className="divider">
+                <span>or</span>
+              </div>
+
+              <form onSubmit={handleRequestOTP}>
+                <div className="form-group">
+                  <label htmlFor="email">Email or Phone</label>
+                  <input 
+                    type="text" 
+                    id="email" 
+                    className="minimal-input" 
+                    placeholder="name@company.com or +1..." 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required 
+                  />
+                </div>
+                
+                <button type="submit" className="primary-btn" disabled={loading || !email}>
+                  {loading ? 'Sending...' : 'Send Login Code'}
+                </button>
+              </form>
+            </>
           ) : (
-            <form onSubmit={handleVerifyOTP} className="login-form">
+            <form onSubmit={handleVerifyOTP}>
               <div className="form-group">
-                <label>Enter Login Code</label>
-                <input
-                  type="text"
+                <label htmlFor="otp" style={{textAlign: 'center'}}>Enter the 6-digit code</label>
+                
+                {previewUrl && (
+                  <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+                    <a href={previewUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', fontSize: '0.85rem' }}>
+                      🔗 View OTP (Dev Mode)
+                    </a>
+                  </div>
+                )}
+
+                <input 
+                  type="text" 
+                  id="otp" 
+                  className="minimal-input" 
+                  placeholder="000000" 
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  placeholder="6-digit code"
-                  required
+                  style={{ textAlign: 'center', letterSpacing: '0.5em', fontSize: '1.2rem' }}
                   maxLength={6}
+                  required 
                 />
               </div>
-              <button type="submit" className="primary-btn" disabled={loading}>
+              
+              <button type="submit" className="primary-btn" disabled={loading || otp.length < 4}>
                 {loading ? 'Verifying...' : 'Verify & Login'}
               </button>
-              {previewUrl && (
-                <div style={{ marginTop: '16px', fontSize: '12px', textAlign: 'center' }}>
-                  <a href={previewUrl} target="_blank" rel="noreferrer" style={{ color: '#3b82f6' }}>
-                    [Dev Mode] View Code
-                  </a>
-                </div>
-              )}
+              
+              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <button type="button" onClick={() => setStep('request')} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '0.85rem' }}>
+                  ← Back to Email/Phone
+                </button>
+              </div>
             </form>
           )
         ) : (
-          <form onSubmit={handlePasswordLogin} className="login-form">
+          <form onSubmit={handlePasswordLogin}>
             <div className="form-group">
-              <label>Email</label>
-              <input
-                type="email"
+              <label htmlFor="password-email">Email</label>
+              <input 
+                type="email" 
+                id="password-email" 
+                className="minimal-input" 
+                placeholder="name@company.com" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                required
+                required 
               />
             </div>
-            <div className="form-group">
-              <label>Password</label>
-              <input
-                type="password"
+            
+            <div className="form-group" style={{ marginTop: '16px' }}>
+              <label htmlFor="password">Password (Onboarding)</label>
+              <input 
+                type="password" 
+                id="password" 
+                className="minimal-input" 
+                placeholder="First 3 chars of email + @26" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="First 3 chars of email + @26"
-                required
+                required 
               />
             </div>
-            <button type="submit" className="primary-btn" disabled={loading}>
+            
+            <button type="submit" className="primary-btn" disabled={loading || !email || !password} style={{ marginTop: '24px' }}>
               {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
