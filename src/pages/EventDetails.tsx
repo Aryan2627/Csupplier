@@ -181,14 +181,21 @@ export function EventDetails() {
         if (field.role === 'Calculation' && field.formula) {
           try {
             let formulaStr = field.formula;
-            const keys = Object.keys(formData).sort((a, b) => b.length - a.length);
-            keys.forEach(k => {
-              const val = newFormData[k] || 0;
-              const regex = new RegExp(`\\b${k}\\b`, 'g');
-              formulaStr = formulaStr.replace(regex, val.toString());
-            });
-            // eslint-disable-next-line no-eval
-            const evaluated = Number(eval(formulaStr));
+              const groupId = field._sourceItemId || 'default';
+              const groupFields = templateFields.filter((tf: any) => (tf._sourceItemId || 'default') === groupId);
+              const sortedFields = [...groupFields].sort((a, b) => (b.originalKey || b.key).length - (a.originalKey || a.key).length);
+              
+              sortedFields.forEach((gf: any) => {
+                const vName = gf.originalKey || gf.key;
+                if (formulaStr.includes(vName)) {
+                  let val = 0;
+                  if (gf.role?.toLowerCase() === 'creator') val = Number(gf.defaultValue) || 0;
+                  else val = Number(newFormData[gf.key]) || 0;
+                  formulaStr = formulaStr.replace(new RegExp(`\\b${vName}\\b`, 'g'), val.toString());
+                }
+              });
+              
+              const evaluated = Number(new Function('return ' + formulaStr)());
             
             // Prevent infinite loops from floating point or type mismatch
             if (!Number.isNaN(evaluated) && Number(newFormData[field.key]) !== evaluated) {
