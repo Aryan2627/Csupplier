@@ -33,8 +33,9 @@ export function Layout({ children }: LayoutProps) {
     <div className="layout-container">
       {/* Sidebar */}
       <aside className="sidebar glass-panel">
-        <div className="sidebar-header">
-          <h2 className="text-gradient">VendorPortal</h2>
+        <div className="sidebar-header" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <img src="/logo.png" alt="ProcGen Logo" style={{ width: '48px', height: '48px', objectFit: 'contain', filter: "contrast(1.2) drop-shadow(0 0 10px rgba(0, 255, 255, 0.4))" }} />
+          <h2 className="text-gradient" style={{ fontSize: '1.25rem' }}>VendorPortal</h2>
         </div>
         
         <nav className="sidebar-nav">
