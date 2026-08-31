@@ -1,13 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import LocationAutocomplete from '../components/LocationAutocomplete';
-import { ArrowLeft, Clock, Save, FileText, CheckCircle2, Calculator, Info, Leaf, Upload, Hash, Percent } from 'lucide-react';
+import { ArrowLeft, Clock, Save, FileText, CheckCircle2, Calculator, Info, Leaf, Upload, Hash, Percent, ShieldCheck } from 'lucide-react';
 
 export function EventDetails() {
   const params = useParams();
   const navigate = useNavigate();
   
   const [event, setEvent] = useState<any>(null);
+  const [hasAcceptedNDA, setHasAcceptedNDA] = useState(false);
+
+  useEffect(() => {
+    if (params.id && localStorage.getItem(`nda_accepted_${params.id}`)) {
+      setHasAcceptedNDA(true);
+    }
+  }, [params.id]);
+
+  const acceptNDA = () => {
+    if (params.id) {
+      localStorage.setItem(`nda_accepted_${params.id}`, 'true');
+      setHasAcceptedNDA(true);
+    }
+  };
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [token, setToken] = useState('');
@@ -397,6 +412,21 @@ export function EventDetails() {
 
   return (
     <div style={{ backgroundColor: '#f8fafc', color: '#333', minHeight: '100%', padding: '24px', fontFamily: 'system-ui, sans-serif' }}>
+      {!hasAcceptedNDA && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(2, 6, 23, 0.4)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
+          <div style={{ background: '#fff', padding: '48px', borderRadius: '24px', border: '1px solid #e2e8f0', maxWidth: '600px', width: '90%', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}>
+            <ShieldCheck size={64} color="#3b82f6" style={{ margin: '0 auto 24px auto' }} />
+            <h2 style={{ fontSize: '1.75rem', fontWeight: 'bold', margin: '0 0 16px 0', color: '#0f172a' }}>Non-Disclosure Agreement</h2>
+            <p style={{ color: '#475569', fontSize: '1rem', lineHeight: '1.6', marginBottom: '32px' }}>
+              This sourcing event contains strictly confidential and proprietary information. By proceeding, you legally agree to keep all pricing, specifications, and buyer details confidential as per the standard Master NDA.
+            </p>
+            <button onClick={acceptNDA} style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', color: '#fff', border: 'none', padding: '16px 32px', borderRadius: '12px', fontSize: '1.1rem', fontWeight: '600', cursor: 'pointer', width: '100%', transition: 'all 0.2s', boxShadow: '0 10px 15px -3px rgba(59, 130, 246, 0.3)' }}>
+              I Agree & Accept NDA
+            </button>
+          </div>
+        </div>
+      )}
+      <div style={{ pointerEvents: hasAcceptedNDA ? 'auto' : 'none' }}>
       
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '32px', backgroundColor: '#fff', padding: '24px 32px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #e2e8f0' }}>
         <button onClick={() => navigate('/events')} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 1px 2px rgba(0,0,0,0.02)' }}>
@@ -717,7 +747,6 @@ export function EventDetails() {
           </div>
         </div>
     </div>
+</div>
   );
 }
-
-
