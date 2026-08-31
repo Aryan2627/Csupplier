@@ -112,14 +112,7 @@ export function Dashboard() {
           </div>
         </div>
 
-        <div className="quick-actions glass-panel">
-          <h2>Quick Actions</h2>
-          <div className="action-buttons">
-            <button className="btn btn-primary w-100" onClick={() => window.location.href = '/settings'}>Update Profile</button>
-            <button className="btn btn-secondary w-100" onClick={() => window.location.href = '/bids'}>View Active Bids</button>
-            <button className="btn btn-secondary w-100">Upload Certificates</button>
-          </div>
-        </div>
+        
       </div>
     </div>
   );
