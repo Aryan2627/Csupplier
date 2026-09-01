@@ -213,8 +213,14 @@ export function Login() {
                     required 
                   />
                 </div>
-                
-                <button type="submit" className="primary-btn" disabled={loading || !email}>
+            
+            <div style={{ textAlign: 'right', marginTop: '8px' }}>
+              <button type="button" onClick={() => { setLoginMethod('forgot_password'); setStep('request'); setError(''); setSuccessMsg(''); }} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 500 }}>
+                Forgot Password?
+              </button>
+            </div>
+
+            <button type="submit" className="primary-btn" disabled={loading || !email}>
                   {loading ? 'Sending...' : 'Send Login Code'}
                 </button>
               </form>
@@ -252,6 +258,71 @@ export function Login() {
               <div style={{ textAlign: 'center', marginTop: '20px' }}>
                 <button type="button" onClick={() => setStep('request')} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '0.85rem' }}>
                   ← Back to Email/Phone
+                </button>
+              </div>
+            </form>
+          )
+        ) : loginMethod === 'forgot_password' ? (
+          step === 'request' ? (
+            <form onSubmit={handleRequestOTP}>
+              <h3 style={{ textAlign: 'center', marginBottom: '16px', fontSize: '1.2rem', color: '#0f172a' }}>Reset Password</h3>
+              <p style={{ textAlign: 'center', marginBottom: '24px', fontSize: '0.9rem', color: '#64748b' }}>Enter your email to receive a password reset code.</p>
+              <div className="form-group">
+                <label htmlFor="reset-email">Email</label>
+                <input 
+                  type="email" 
+                  id="reset-email" 
+                  className="minimal-input" 
+                  placeholder="name@company.com" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required 
+                />
+              </div>
+              <button type="submit" className="primary-btn" disabled={loading || !email}>
+                {loading ? 'Sending...' : 'Send Reset Code'}
+              </button>
+              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <button type="button" onClick={() => { setLoginMethod('password'); setError(''); setSuccessMsg(''); }} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '0.85rem' }}>
+                  Back to Login
+                </button>
+              </div>
+            </form>
+          ) : (
+            <form onSubmit={handleResetPassword}>
+              <h3 style={{ textAlign: 'center', marginBottom: '16px', fontSize: '1.2rem', color: '#0f172a' }}>Create New Password</h3>
+              <div className="form-group">
+                <label htmlFor="reset-otp" style={{textAlign: 'center'}}>Enter the 6-digit code</label>
+                <input 
+                  type="text" 
+                  id="reset-otp" 
+                  className="minimal-input" 
+                  placeholder="000000" 
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  style={{ textAlign: 'center', letterSpacing: '0.5em', fontSize: '1.2rem' }}
+                  maxLength={6}
+                  required 
+                />
+              </div>
+              <div className="form-group" style={{ marginTop: '16px' }}>
+                <label htmlFor="new-password">New Password</label>
+                <input 
+                  type="password" 
+                  id="new-password" 
+                  className="minimal-input" 
+                  placeholder="Enter new password" 
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required 
+                />
+              </div>
+              <button type="submit" className="primary-btn" disabled={loading || otp.length < 4 || !newPassword} style={{ marginTop: '24px' }}>
+                {loading ? 'Resetting...' : 'Reset Password'}
+              </button>
+              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <button type="button" onClick={() => setStep('request')} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '0.85rem' }}>
+                  Back to Email
                 </button>
               </div>
             </form>
