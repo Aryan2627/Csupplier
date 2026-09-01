@@ -4,11 +4,13 @@ import './Login.css';
 
 export function Login() {
   const navigate = useNavigate();
-  const [loginMethod, setLoginMethod] = useState<'otp' | 'password'>('otp');
+  const [loginMethod, setLoginMethod] = useState<'otp' | 'password' | 'forgot_password'>('otp');
   const [step, setStep] = useState<'request' | 'verify'>('request');
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -87,6 +89,38 @@ export function Login() {
     }
   };
 
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !otp || !newPassword) return;
+    setError('');
+    setSuccessMsg('');
+    setLoading(true);
+
+    try {
+      const res = await fetch(`${getBaseUrl()}/api/vendor-auth`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, action: 'reset_password', otp, newPassword })
+      });
+      
+      const data = await res.json();
+      if (res.ok) {
+        setSuccessMsg('Password updated successfully! You can now login.');
+        setLoginMethod('password');
+        setStep('request');
+        setPassword('');
+        setNewPassword('');
+        setOtp('');
+      } else {
+        setError(data.error || 'Failed to reset password');
+      }
+    } catch (err: any) {
+      setError('Network error');
+    } finally {
+      setLoading(false);
+    }
+  };
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return;
@@ -126,8 +160,9 @@ export function Login() {
         </div>
         
         {error && <div className="error-banner">{error}</div>}
+          {successMsg && <div className="error-banner" style={{ backgroundColor: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0', marginBottom: '16px', padding: '12px', borderRadius: '8px', fontSize: '0.9rem', textAlign: 'center' }}>{successMsg}</div>}
 
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '24px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '8px' }}>
+        <div style={{ display: loginMethod === 'forgot_password' ? 'none' : 'flex', gap: '8px', marginBottom: '24px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '8px' }}>
           <button 
             type="button"
             onClick={() => { setLoginMethod('otp'); setError(''); }}
