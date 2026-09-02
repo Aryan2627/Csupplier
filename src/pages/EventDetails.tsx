@@ -555,6 +555,14 @@ export function EventDetails() {
 
                   if (visibleFields.length === 0) return null;
 
+                  const lineItemsMap = new Map<string, any[]>();
+                  visibleFields.forEach((f: any) => {
+                     const gid = f._sourceItemId || 'default';
+                     if (!lineItemsMap.has(gid)) lineItemsMap.set(gid, []);
+                     lineItemsMap.get(gid)!.push(f);
+                  });
+                  const lineItems = Array.from(lineItemsMap.entries());
+
                   return (
                     <div key={section}>
                       <div style={{ marginBottom: '20px', paddingBottom: '8px', borderBottom: '1px solid #f4f4f5', display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -562,19 +570,22 @@ export function EventDetails() {
                         <h3 style={{ margin: 0, fontWeight: 600, color: '#27272a', fontSize: '1rem', letterSpacing: '-0.2px' }}>{section}</h3>
                       </div>
                       
-                      <div style={{ 
-                        display: 'flex', 
-                        gap: '24px', 
-                        overflowX: 'auto', 
-                        paddingBottom: '16px', 
-                        WebkitOverflowScrolling: 'touch'
-                      }}>
-                        {visibleFields.map((field: any, idx: number) => {
-                          const isReadOnly = field.role === 'Creator' || field.role === 'Calculation';
-                          const val = formData[field.key] !== undefined ? formData[field.key] : '';
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                        {lineItems.map(([gid, itemFields], gIdx) => (
+                          <div key={gid} style={{ 
+                            display: 'flex', 
+                            gap: '24px', 
+                            overflowX: 'auto', 
+                            paddingBottom: '16px', 
+                            WebkitOverflowScrolling: 'touch',
+                            borderBottom: gIdx < lineItems.length - 1 ? '1px dashed #e4e4e7' : 'none'
+                          }}>
+                            {itemFields.map((field: any, idx: number) => {
+                              const isReadOnly = field.role === 'Creator' || field.role === 'Calculation';
+                              const val = formData[field.key] !== undefined ? formData[field.key] : '';
 
-                          return (
-                            <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '280px', flex: '0 0 auto' }}>
+                              return (
+                                <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '280px', flex: '0 0 auto' }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', fontWeight: 500, color: '#3f3f46' }}>
                                   {field.name}
@@ -664,6 +675,8 @@ export function EventDetails() {
                             </div>
                           );
                         })}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   );
