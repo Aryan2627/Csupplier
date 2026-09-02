@@ -32,6 +32,7 @@ export function EventDetails() {
   const [chatMessage, setChatMessage] = useState('');
   
   const [formData, setFormData] = useState<Record<string, string | number>>({});
+  const [activeStageIndex, setActiveStageIndex] = useState(0);
   const [currency, setCurrency] = useState('INR');
   const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -129,30 +130,37 @@ export function EventDetails() {
       });
   }, [params.id, navigate]);
 
-  const templateFields = React.useMemo(() => {
+  const parsedStages = React.useMemo(() => {
     if (!event || !event.stages) return [];
-    try {
-      const stagesArr = JSON.parse(event.stages);
-      if (stagesArr && stagesArr.length > 0 && stagesArr[0].templateFields) {
-        return stagesArr[0].templateFields;
-      }
-    } catch(e) {}
-    return [];
+    try { return JSON.parse(event.stages) || []; } catch(e) { return []; }
   }, [event]);
+
+  const allTemplateFields = React.useMemo(() => {
+    let all: any[] = [];
+    parsedStages.forEach((s: any) => { if (s.templateFields) all = [...all, ...s.templateFields]; });
+    return all;
+  }, [parsedStages]);
+
+  const templateFields = React.useMemo(() => {
+    if (parsedStages.length > 0 && parsedStages[activeStageIndex]) {
+      return parsedStages[activeStageIndex].templateFields || [];
+    }
+    return [];
+  }, [parsedStages, activeStageIndex]);
 
   
   // Auto-calculate formula fields on mount if they haven't been calculated yet
   useEffect(() => {
-    if (templateFields.length > 0 && Object.keys(formData).length > 0) {
+    if (allTemplateFields.length > 0 && Object.keys(formData).length > 0) {
       let hasCalc = false;
       const next = { ...formData };
       let changed = false;
       
-      templateFields.forEach((f: any) => {
+      allTemplateFields.forEach((f: any) => {
         if (f.role?.toLowerCase() === 'calculation' && f.formula) {
            hasCalc = true;
            const groupId = f._sourceItemId || 'default';
-           const groupFields = templateFields.filter((tf: any) => (tf._sourceItemId || 'default') === groupId);
+           const groupFields = allTemplateFields.filter((tf: any) => (tf._sourceItemId || 'default') === groupId);
            try {
              let expr = f.formula;
              const sortedFields = [...groupFields].sort((a, b) => (b.originalKey || b.key).length - (a.originalKey || a.key).length);
@@ -180,24 +188,24 @@ export function EventDetails() {
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [templateFields]); // Only run when template fields change (which happens on event load)
+  }, [allTemplateFields]); // Only run when template fields change (which happens on event load)
 
   const enableESG = templateFields.some((f: any) => f.enableESG);
 
   useEffect(() => {
-    if (templateFields.length === 0) return;
+    if (allTemplateFields.length === 0) return;
     
     // Debounce the calculation to improve typing performance
     const timeout = setTimeout(() => {
       let updated = false;
       const newFormData = { ...formData };
       
-      templateFields.forEach((field: any) => {
+      allTemplateFields.forEach((field: any) => {
         if (field.role === 'Calculation' && field.formula) {
           try {
             let formulaStr = field.formula;
               const groupId = field._sourceItemId || 'default';
-              const groupFields = templateFields.filter((tf: any) => (tf._sourceItemId || 'default') === groupId);
+              const groupFields = allTemplateFields.filter((tf: any) => (tf._sourceItemId || 'default') === groupId);
               const sortedFields = [...groupFields].sort((a, b) => (b.originalKey || b.key).length - (a.originalKey || a.key).length);
               
               sortedFields.forEach((gf: any) => {
@@ -227,7 +235,7 @@ export function EventDetails() {
     }, 300);
 
     return () => clearTimeout(timeout);
-  }, [formData, templateFields]);
+  }, [formData, allTemplateFields]);
 
   useEffect(() => {
     if (!event || !event.endTime) {
@@ -316,7 +324,7 @@ export function EventDetails() {
             if (!totalAmount) {
         let calcAmount = 0;
         const groupedFields = new Map<any, any[]>();
-        templateFields.forEach((f: any) => {
+        allTemplateFields.forEach((f: any) => {
             const g = f._sourceItemId || 'default';
             if (!groupedFields.has(g)) groupedFields.set(g, []);
             groupedFields.get(g)!.push(f);
