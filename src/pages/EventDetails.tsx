@@ -444,7 +444,7 @@ export function EventDetails() {
   const sections = Array.from(new Set(templateFields.map((f: any) => f.section || 'General')));
 
   return (
-    <div style={{ backgroundColor: '#f4f4f5', color: '#18181b', minHeight: '100vh', fontFamily: 'system-ui, sans-serif' }}>
+    <div style={{ backgroundColor: '#f0f4f8', color: '#18181b', minHeight: '100vh', fontFamily: 'system-ui, sans-serif' }}>
       
       {/* NDA Modal */}
       {!hasAcceptedNDA && (
@@ -476,21 +476,21 @@ export function EventDetails() {
       )}
 
       {/* Header Banner */}
-      <div style={{ backgroundColor: '#fff', borderBottom: '1px solid #e4e4e7', padding: '24px 32px' }}>
+      <div style={{ backgroundColor: '#1e3a8a', padding: '32px' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <button onClick={() => navigate('/vendor/events')} style={{ background: '#f4f4f5', border: '1px solid #e4e4e7', borderRadius: '8px', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }}>
-            <ArrowLeft size={18} color="#3f3f46" />
+          <button onClick={() => navigate('/vendor/events')} style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', color: '#fff' }}>
+            <ArrowLeft size={18} />
           </button>
           <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '6px' }}>
-              <h1 style={{ fontSize: '1.4rem', fontWeight: 600, color: '#09090b', margin: 0, letterSpacing: '-0.3px' }}>{event.title}</h1>
+              <h1 style={{ fontSize: '1.7rem', fontWeight: 700, color: '#ffffff', margin: 0, letterSpacing: '-0.3px' }}>{event.title}</h1>
               {getEventTypeBadge(parsedStages.length > 0 && parsedStages[activeStageIndex] ? parsedStages[activeStageIndex].type : event.type)}
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '24px', color: '#52525b', fontSize: '0.85rem', fontWeight: 500 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '24px', color: '#bfdbfe', fontSize: '0.9rem', fontWeight: 500 }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><FileText size={14} /> Ref: {event.refId}</span>
               <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Clock size={14} color={timeLeft.includes('Ended') ? '#ef4444' : '#ea580c'} /> 
-                Time Left: <strong style={{ color: timeLeft.includes('Ended') ? '#ef4444' : '#ea580c' }}>{timeLeft}</strong>
+                <Clock size={14} color={timeLeft.includes('Ended') ? '#fca5a5' : '#fde047'} /> 
+                Time Left: <strong style={{ color: timeLeft.includes('Ended') ? '#fca5a5' : '#fde047' }}>{timeLeft}</strong>
               </span>
               <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Hash size={14} /> {event.itemsCount} Items</span>
             </div>
@@ -504,11 +504,11 @@ export function EventDetails() {
         {/* Form Container */}
         <div style={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #e4e4e7', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
           
-          <div style={{ padding: '24px 32px', borderBottom: '1px solid #e4e4e7', backgroundColor: '#fafafa' }}>
-            <h2 style={{ margin: 0, fontSize: '1.15rem', color: '#09090b', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}>
-              <Calculator size={18} color="#3f3f46" /> Event Requirements & Response
+          <div style={{ padding: '24px 32px', borderBottom: '1px solid #e4e4e7', backgroundColor: '#f8fafc' }}>
+            <h2 style={{ margin: 0, fontSize: '1.2rem', color: '#1e3a8a', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}>
+              <Calculator size={18} color="#2563eb" /> Event Requirements & Response
             </h2>
-            <p style={{ margin: '4px 0 0 26px', color: '#71717a', fontSize: '0.85rem' }}>Please complete the necessary technical and commercial details below.</p>
+            <p style={{ margin: '4px 0 0 26px', color: '#64748b', fontSize: '0.9rem' }}>Please complete the necessary technical and commercial details below.</p>
           </div>
 
           {/* Tabs */}
@@ -565,9 +565,9 @@ export function EventDetails() {
 
                   return (
                     <div key={section}>
-                      <div style={{ marginBottom: '20px', paddingBottom: '8px', borderBottom: '1px solid #f4f4f5', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <div style={{ width: '3px', height: '16px', backgroundColor: '#d4d4d8', borderRadius: '2px' }} />
-                        <h3 style={{ margin: 0, fontWeight: 600, color: '#27272a', fontSize: '1rem', letterSpacing: '-0.2px' }}>{section}</h3>
+                      <div style={{ marginBottom: '20px', paddingBottom: '8px', borderBottom: '1px solid #e0e7ff', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ width: '4px', height: '18px', backgroundColor: '#2563eb', borderRadius: '2px' }} />
+                        <h3 style={{ margin: 0, fontWeight: 600, color: '#1e3a8a', fontSize: '1.05rem', letterSpacing: '-0.2px' }}>{section}</h3>
                       </div>
                       
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -694,9 +694,9 @@ export function EventDetails() {
         <div style={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #e4e4e7', padding: '24px 32px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
-              <h3 style={{ margin: '0 0 8px 0', fontSize: '1.15rem', color: '#09090b', fontWeight: 600 }}>Finalize & Submit</h3>
-              <div style={{ fontSize: '0.85rem', color: '#71717a' }}>
-                Buyer Evaluation Currency: <strong style={{color: '#18181b'}}>{event.baseCurrency || 'INR'}</strong>
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '1.2rem', color: '#1e3a8a', fontWeight: 600 }}>Finalize & Submit</h3>
+              <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
+                Buyer Evaluation Currency: <strong style={{color: '#1e3a8a'}}>{event.baseCurrency || 'INR'}</strong>
               </div>
             </div>
             
