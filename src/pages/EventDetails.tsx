@@ -248,11 +248,12 @@ export function EventDetails() {
       const days = Math.floor(difference / (1000 * 60 * 60 * 24));
       const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      if (days > 0) return `${days}d ${hours}h ${minutes}m`;
-      return `${hours}h ${minutes}m`;
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+      if (days > 0) return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      return `${hours}h ${minutes}m ${seconds}s`;
     };
     setTimeLeft(calculateTimeLeft());
-    const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 60000);
+    const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 1000);
     return () => clearInterval(timer);
   }, [event]);
 
@@ -492,7 +493,7 @@ export function EventDetails() {
                 <Clock size={14} color={timeLeft.includes('Ended') ? '#fca5a5' : '#fde047'} /> 
                 Time Left: <strong style={{ color: timeLeft.includes('Ended') ? '#fca5a5' : '#fde047' }}>{timeLeft}</strong>
               </span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Hash size={14} /> {event.itemsCount} Items</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Hash size={14} /> {Array.from(new Set(allTemplateFields.map((f: any) => f._sourceItemId).filter(Boolean))).length || 1} Items</span>
             </div>
           </div>
         </div>
