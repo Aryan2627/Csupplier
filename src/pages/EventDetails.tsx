@@ -314,6 +314,31 @@ export function EventDetails() {
 
   const handleSubmit = async () => {
     if (!token) return;
+
+    // Validate Required Fields
+    const missingFields: string[] = [];
+    allTemplateFields.forEach((f: any) => {
+      const isCreator = f.role?.toLowerCase() === 'creator';
+      const isCalc = f.role?.toLowerCase() === 'calculation';
+      if (f.required && !isCreator && !isCalc) {
+        let isVisible = true;
+        if (f.dependsOn && f.dependsOn.field) {
+          isVisible = String(formData[f.dependsOn.field]) === String(f.dependsOn.value);
+        }
+        if (isVisible) {
+          const val = formData[f.key];
+          if (val === undefined || val === null || val === '') {
+            missingFields.push(f.name);
+          }
+        }
+      }
+    });
+
+    if (missingFields.length > 0) {
+      alert(`Please fill out the following required fields:\n- ${missingFields.join('\n- ')}`);
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
