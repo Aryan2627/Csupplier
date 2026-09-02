@@ -575,13 +575,36 @@ export function EventDetails() {
                         {lineItems.map(([gid, itemFields], gIdx) => (
                           <div key={gid} style={{ 
                             display: 'flex', 
-                            gap: '24px', 
-                            overflowX: 'auto', 
-                            paddingBottom: '16px', 
-                            WebkitOverflowScrolling: 'touch',
-                            borderBottom: gIdx < lineItems.length - 1 ? '1px dashed #e4e4e7' : 'none'
+                            border: '1px solid #e2e8f0', 
+                            borderRadius: '12px', 
+                            backgroundColor: '#fff',
+                            overflow: 'hidden',
+                            boxShadow: '0 2px 4px -1px rgba(0,0,0,0.03)'
                           }}>
-                            {itemFields.map((field: any, idx: number) => {
+                            <div style={{ 
+                              width: '64px', 
+                              backgroundColor: '#f8fafc', 
+                              borderRight: '1px solid #e2e8f0', 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              justifyContent: 'center',
+                              flexDirection: 'column',
+                              gap: '4px',
+                              color: '#94a3b8',
+                              flexShrink: 0
+                            }}>
+                              <span style={{ fontSize: '0.65rem', textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.05em' }}>Item</span>
+                              <span style={{ fontSize: '1.3rem', fontWeight: 700, color: '#1e3a8a' }}>{gIdx + 1}</span>
+                            </div>
+                            <div style={{ 
+                              display: 'flex', 
+                              gap: '24px', 
+                              overflowX: 'auto', 
+                              padding: '20px 24px', 
+                              flex: 1,
+                              WebkitOverflowScrolling: 'touch'
+                            }}>
+                              {itemFields.map((field: any, idx: number) => {
                               const isReadOnly = field.role === 'Creator' || field.role === 'Calculation';
                               const val = formData[field.key] !== undefined ? formData[field.key] : '';
 
@@ -676,6 +699,7 @@ export function EventDetails() {
                             </div>
                           );
                         })}
+                            </div>
                           </div>
                         ))}
                       </div>
