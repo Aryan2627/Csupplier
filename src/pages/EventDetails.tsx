@@ -466,7 +466,7 @@ export function EventDetails() {
               </button>
               <button 
                 onClick={() => setHasAcceptedNDA(true)} 
-                style={{ padding: '10px 24px', backgroundColor: '#18181b', color: '#ffffff', border: 'none', borderRadius: '8px', fontWeight: '500', fontSize: '0.95rem', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', transition: 'all 0.2s' }}
+                style={{ padding: '10px 24px', backgroundColor: '#2563eb', color: '#ffffff', border: 'none', borderRadius: '8px', fontWeight: '500', fontSize: '0.95rem', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', transition: 'all 0.2s' }}
               >
                 I Agree, Proceed
               </button>
@@ -526,9 +526,9 @@ export function EventDetails() {
                       fontWeight: isActive ? 600 : 500, 
                       cursor: 'pointer',
                       backgroundColor: 'transparent',
-                      color: isActive ? '#09090b' : '#71717a',
+                      color: isActive ? '#2563eb' : '#71717a',
                       border: 'none',
-                      borderBottom: isActive ? '2px solid #18181b' : '2px solid transparent',
+                      borderBottom: isActive ? '2px solid #2563eb' : '2px solid transparent',
                       transition: 'all 0.2s',
                       whiteSpace: 'nowrap',
                       display: 'flex', alignItems: 'center', gap: '8px'
@@ -751,16 +751,16 @@ export function EventDetails() {
             onClick={handleSubmit}
             disabled={isSubmitting || allTemplateFields.length === 0}
             style={{ 
-              width: '100%', padding: '14px 24px', backgroundColor: '#18181b', color: '#ffffff', 
+              width: '100%', padding: '14px 24px', backgroundColor: '#2563eb', color: '#ffffff', 
               border: 'none', borderRadius: '8px', fontWeight: '600', fontSize: '1rem', 
               cursor: (isSubmitting || allTemplateFields.length === 0) ? 'not-allowed' : 'pointer', 
               display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px',
               opacity: (isSubmitting || allTemplateFields.length === 0) ? 0.7 : 1,
-              boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+              boxShadow: '0 4px 6px -1px rgba(37,99,235,0.2)',
               transition: 'background-color 0.2s'
             }}
-            onMouseOver={(e) => { if(!(isSubmitting || allTemplateFields.length === 0)) e.currentTarget.style.backgroundColor = '#27272a'; }}
-            onMouseOut={(e) => { if(!(isSubmitting || allTemplateFields.length === 0)) e.currentTarget.style.backgroundColor = '#18181b'; }}
+            onMouseOver={(e) => { if(!(isSubmitting || allTemplateFields.length === 0)) e.currentTarget.style.backgroundColor = '#1d4ed8'; }}
+            onMouseOut={(e) => { if(!(isSubmitting || allTemplateFields.length === 0)) e.currentTarget.style.backgroundColor = '#2563eb'; }}
           >
             {isSubmitting ? 'Submitting...' : <><Save size={18} /> {existingBid ? 'Submit Revised Bid' : 'Submit Final Bid'}</>}
           </button>
