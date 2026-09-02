@@ -276,7 +276,7 @@ export function EventDetails() {
   
   const handleAcceptCounterOffer = async (msg: any) => {
     if (!existingBid) return;
-    const newMsg = { id: Date.now(), sender: vendorInfo?.name || 'Vendor', type: 'text', msg: `? I have accepted your counter offer of ${msg.offerDetails.price}`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
+    const newMsg = { id: Date.now(), sender: vendorInfo?.name || 'Vendor', type: 'text', msg: `✅ I have accepted your counter offer of ${msg.offerDetails.price}`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
     const updatedHistory = [...chatHistory, newMsg];
     setChatHistory(updatedHistory);
     
@@ -292,7 +292,7 @@ export function EventDetails() {
 
   const handleRejectCounterOffer = async (msg: any) => {
     if (!existingBid) return;
-    const newMsg = { id: Date.now(), sender: vendorInfo?.name || 'Vendor', type: 'text', msg: `? I have rejected your counter offer of ${msg.offerDetails.price}`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
+    const newMsg = { id: Date.now(), sender: vendorInfo?.name || 'Vendor', type: 'text', msg: `❌ I have rejected your counter offer of ${msg.offerDetails.price}`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
     const updatedHistory = [...chatHistory, newMsg];
     setChatHistory(updatedHistory);
     
@@ -394,14 +394,17 @@ export function EventDetails() {
           localAmount: totalAmount,
           currency: currency,
           exchangeRate: exchangeRate,
-          templateData: formData
+          templateData: JSON.stringify(formData)
         })
       });
 
       if (res.ok) {
         alert("Bid successfully submitted!");
         navigate('/events');
-      } else alert("Error submitting bid.");
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        alert(errData.error || "Error submitting bid. Please try again.");
+      }
     } catch (err) {
       alert("Network error.");
     } finally {
@@ -466,7 +469,7 @@ export function EventDetails() {
                 Decline & Exit
               </button>
               <button 
-                onClick={() => setHasAcceptedNDA(true)} 
+                onClick={acceptNDA} 
                 style={{ padding: '10px 24px', backgroundColor: '#2563eb', color: '#ffffff', border: 'none', borderRadius: '8px', fontWeight: '500', fontSize: '0.95rem', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', transition: 'all 0.2s' }}
               >
                 I Agree, Proceed

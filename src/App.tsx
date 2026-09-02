@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Layout } from './components/Layout';
 import { Dashboard } from './pages/Dashboard';
 import { Login } from './pages/Login';
-
 import { Events } from './pages/Events';
 import { EventDetails } from './pages/EventDetails';
 import { Settings } from './pages/Settings';
@@ -21,16 +20,19 @@ function App() {
         
         {/* Protected Routes wrapped in Layout */}
         <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
+        <Route path="/vendor" element={<Layout><Dashboard /></Layout>} />
         <Route path="/events" element={<Layout><Events /></Layout>} />
+        <Route path="/vendor/events" element={<Layout><Events /></Layout>} />
         <Route path="/events/:id" element={<Layout><EventDetails /></Layout>} />
+        <Route path="/vendor/events/:id" element={<Layout><EventDetails /></Layout>} />
         <Route path="/bids" element={<Layout><Bids /></Layout>} />
         <Route path="/orders" element={<Layout><Orders /></Layout>} />
         <Route path="/settings" element={<Layout><Settings /></Layout>} />
         <Route path="/vendor/onboarding" element={<Layout><Onboarding /></Layout>} />
         <Route path="/onboarding" element={<Layout><Onboarding /></Layout>} />
         
-        {/* Redirect root to dashboard */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        {/* Redirect root to vendor dashboard */}
+        <Route path="/" element={<Navigate to="/vendor" replace />} />
       </Routes>
     </Router>
   );
