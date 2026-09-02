@@ -562,13 +562,19 @@ export function EventDetails() {
                         <h3 style={{ margin: 0, fontWeight: 600, color: '#27272a', fontSize: '1rem', letterSpacing: '-0.2px' }}>{section}</h3>
                       </div>
                       
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+                      <div style={{ 
+                        display: 'flex', 
+                        gap: '24px', 
+                        overflowX: 'auto', 
+                        paddingBottom: '16px', 
+                        WebkitOverflowScrolling: 'touch'
+                      }}>
                         {visibleFields.map((field: any, idx: number) => {
                           const isReadOnly = field.role === 'Creator' || field.role === 'Calculation';
                           const val = formData[field.key] !== undefined ? formData[field.key] : '';
 
                           return (
-                            <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '280px', flex: '0 0 auto' }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', fontWeight: 500, color: '#3f3f46' }}>
                                   {field.name}
