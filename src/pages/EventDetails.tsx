@@ -561,21 +561,63 @@ export function EventDetails() {
                                   />
                                 </div>
                               ) : field.type === 'date' ? (
-                                <input 
-                                  type="date"
-                                  value={formData[field.key] || ''}
-                                  onChange={(e) => handleInputChange(field.key, e.target.value)}
-                                  readOnly={isReadOnly}
-                                  style={{ 
-                                    width: '100%', padding: '14px 16px', fontSize: '0.95rem',
-                                    border: isReadOnly ? '1px solid #e2e8f0' : '1px solid #cbd5e1',
-                                    borderRadius: '8px', outline: 'none', transition: 'all 0.2s', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)',
-                                    backgroundColor: isReadOnly ? '#f8fafc' : '#ffffff',
-                                    color: isReadOnly ? '#475569' : '#0f172a'
-                                  }}
-                                />
-                              ) : (
-                                <div style={{ position: 'relative' }}>
+                                  <input 
+                                    type="date"
+                                    value={formData[field.key] || ''}
+                                    onChange={(e) => handleInputChange(field.key, e.target.value)}
+                                    readOnly={isReadOnly}
+                                    style={{ 
+                                      width: '100%', padding: '14px 16px', fontSize: '0.95rem',
+                                      border: isReadOnly ? '1px solid #e2e8f0' : '1px solid #cbd5e1',
+                                      borderRadius: '8px', outline: 'none', transition: 'all 0.2s', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)',
+                                      backgroundColor: isReadOnly ? '#f8fafc' : '#ffffff',
+                                      color: isReadOnly ? '#475569' : '#0f172a'
+                                    }}
+                                  />
+                                ) : field.type === 'boolean' ? (
+                                  <select
+                                    value={formData[field.key] || ''}
+                                    onChange={(e) => handleInputChange(field.key, e.target.value)}
+                                    disabled={isReadOnly}
+                                    style={{ 
+                                      width: '100%', padding: '14px 16px', fontSize: '0.95rem',
+                                      border: isReadOnly ? '1px solid #e2e8f0' : '1px solid #cbd5e1',
+                                      borderRadius: '8px', outline: 'none', transition: 'all 0.2s', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)',
+                                      backgroundColor: isReadOnly ? '#f8fafc' : '#ffffff',
+                                      color: isReadOnly ? '#475569' : '#0f172a'
+                                    }}
+                                  >
+                                    <option value="">Select...</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                  </select>
+                                ) : field.type === 'file' ? (
+                                  <div style={{ position: 'relative' }}>
+                                    <input 
+                                      type="file"
+                                      disabled={isReadOnly}
+                                      onChange={(e) => {
+                                        if (e.target.files && e.target.files.length > 0) {
+                                          handleInputChange(field.key, e.target.files[0].name);
+                                        }
+                                      }}
+                                      style={{ 
+                                        width: '100%', padding: '10px 16px', fontSize: '0.95rem',
+                                        border: isReadOnly ? '1px solid #e2e8f0' : '1px solid #cbd5e1',
+                                        borderRadius: '8px', outline: 'none', transition: 'all 0.2s', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)',
+                                        backgroundColor: isReadOnly ? '#f8fafc' : '#ffffff',
+                                        color: isReadOnly ? '#475569' : '#0f172a',
+                                        cursor: isReadOnly ? 'not-allowed' : 'pointer'
+                                      }}
+                                    />
+                                    {formData[field.key] && (
+                                       <div style={{ marginTop: '8px', fontSize: '0.85rem', color: '#10b981', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500' }}>
+                                         <span>✓ Uploaded: {formData[field.key]}</span>
+                                       </div>
+                                    )}
+                                  </div>
+                                ) : (
+                                  <div style={{ position: 'relative' }}>
                                   {field.type === 'percentage' && <Percent size={14} color="#94a3b8" style={{ position: 'absolute', right: '16px', top: '15px' }} />}
                                   {field.type === 'number' && <Hash size={14} color="#94a3b8" style={{ position: 'absolute', left: '16px', top: '15px' }} />}
                                   <input 
