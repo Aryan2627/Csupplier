@@ -453,10 +453,10 @@ export function EventDetails() {
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: '32px', alignItems: 'flex-start' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
         
         {/* Main Content Area */}
-        <div style={{ flex: '2', display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
              <div style={{ backgroundColor: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '32px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', paddingBottom: '24px', borderBottom: '2px dashed #f1f5f9' }}>
               <div>
@@ -734,7 +734,7 @@ export function EventDetails() {
         </div>
 
         {/* Right Sidebar */}
-        <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           
           <div style={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
             <h3 style={{ margin: '0 0 16px 0', fontSize: '1rem', color: '#0f172a' }}>Submit Your Bid</h3>
