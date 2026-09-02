@@ -443,7 +443,7 @@ export function EventDetails() {
         <div style={{ flex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '10px' }}>
             <h1 style={{ fontSize: '1.8rem', fontWeight: 700, color: '#0f172a', margin: 0, letterSpacing: '-0.5px' }}>{event.title}</h1>
-            {getEventTypeBadge(event.type)}
+            {getEventTypeBadge(parsedStages.length > 0 && parsedStages[activeStageIndex] ? parsedStages[activeStageIndex].type : event.type)}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '24px', color: '#64748b', fontSize: '0.95rem', fontWeight: 500 }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><FileText size={16} /> Ref: {event.refId}</span>
@@ -472,6 +472,31 @@ export function EventDetails() {
               )}
             </div>
 
+            {parsedStages.length > 1 && (
+              <div style={{ display: 'flex', gap: '12px', marginBottom: '24px', paddingBottom: '12px', borderBottom: '1px solid #e2e8f0', overflowX: 'auto' }}>
+                {parsedStages.map((stage: any, idx: number) => {
+                  const isActive = idx === activeStageIndex;
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveStageIndex(idx)}
+                      style={{
+                        padding: '12px 24px', borderRadius: '8px', fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer',
+                        backgroundColor: isActive ? '#eff6ff' : 'transparent',
+                        color: isActive ? '#2563eb' : '#64748b',
+                        border: isActive ? '1px solid #bfdbfe' : '1px solid transparent',
+                        transition: 'all 0.2s',
+                        whiteSpace: 'nowrap',
+                        display: 'flex', alignItems: 'center', gap: '8px'
+                      }}
+                    >
+                      {stage.type} - {stage.name}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+            
             {templateFields.length > 0 ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                 {sections.map((section: any) => {
