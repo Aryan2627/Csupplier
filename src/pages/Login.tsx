@@ -38,7 +38,7 @@ export function Login() {
     if (!email) { setError('Please enter your email or phone'); return; }
     setError(''); setLoading(true);
     try {
-      const res = await fetch(\\/api/auth/request-otp\, {
+      const res = await fetch(`${API_BASE}/api/auth/request-otp`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contact: email, source: 'vendor' })
       });
@@ -55,7 +55,7 @@ export function Login() {
     if (!otp) { setError('Please enter the OTP'); return; }
     setError(''); setLoading(true);
     try {
-      const res = await fetch(\\/api/auth/verify-otp\, {
+      const res = await fetch(`${API_BASE}/api/auth/verify-otp`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contact: email, otp, source: 'vendor' })
       });
@@ -73,7 +73,7 @@ export function Login() {
     if (!email || !password) { setError('Please enter email and password'); return; }
     setError(''); setLoading(true);
     try {
-      const res = await fetch(\\/api/vendor-auth\, {
+      const res = await fetch(`${API_BASE}/api/vendor-auth`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'login', email, password })
       });
@@ -92,7 +92,7 @@ export function Login() {
       if (!email) { setError('Please enter your email'); return; }
       setError(''); setLoading(true);
       try {
-        const res = await fetch(\\/api/vendor-auth\, {
+        const res = await fetch(`${API_BASE}/api/vendor-auth`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'request_reset', email })
         });
@@ -106,7 +106,7 @@ export function Login() {
       if (!otp || !newPassword) { setError('Please enter code and new password'); return; }
       setError(''); setLoading(true);
       try {
-        const res = await fetch(\\/api/vendor-auth\, {
+        const res = await fetch(`${API_BASE}/api/vendor-auth`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'reset_password', email, otp, newPassword })
         });
@@ -194,7 +194,7 @@ export function Login() {
                 <button 
                   type="button" 
                   className="google-btn"
-                  onClick={() => { window.location.href = \\/api/auth/google?source=vendor\; }}
+                  onClick={() => { window.location.href = `${getBaseUrl()}/api/auth/google?source=vendor`; }}
                 >
                   <svg width="20" height="20" viewBox="0 0 48 48">
                     <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
