@@ -15,7 +15,7 @@ export function Orders() {
     if (!t || !v) { navigate("/login"); return; }
     try {
       const pv = JSON.parse(v); setVendorInfo(pv);
-      fetch("https://cpanel-swart.vercel.app/api/vendor-pos?vendorName=" + encodeURIComponent(pv.name), { headers: { "Authorization": "Bearer " + t } })
+      fetch("https://sourcing.procgen.in/api/vendor-pos?vendorName=" + encodeURIComponent(pv.name), { headers: { "Authorization": "Bearer " + t } })
         .then(res => { if (res.status === 401) { localStorage.removeItem("token"); localStorage.removeItem("vendor"); window.location.href = "/login"; return; } if (!res.ok) throw new Error("Failed to fetch orders"); return res.json(); })
         .then(data => { if (data) setOrders(data); setLoading(false); })
         .catch(err => { setError(err.message); setLoading(false); });
@@ -24,7 +24,7 @@ export function Orders() {
 
   const handleUpdateStatus = async (orderId: string, newStatus: string) => {
     const t = localStorage.getItem("token");
-    const res = await fetch("https://cpanel-swart.vercel.app/api/vendor-pos", { method: "PUT", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + t }, body: JSON.stringify({ id: orderId, status: newStatus }) });
+    const res = await fetch("https://sourcing.procgen.in/api/vendor-pos", { method: "PUT", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + t }, body: JSON.stringify({ id: orderId, status: newStatus }) });
     if (res.ok) setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
     else alert("Failed to update PO status");
   };

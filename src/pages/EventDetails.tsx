@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import LocationAutocomplete from '../components/LocationAutocomplete';
 import { ArrowLeft, Clock, Save, FileText, CheckCircle2, Calculator, Info, Leaf, Upload, Hash, Percent, ShieldCheck } from 'lucide-react';
@@ -50,21 +50,21 @@ export function EventDetails() {
     setToken(t);
     if (v) setVendorInfo(JSON.parse(v));
 
-    fetch(`https://cpanel-swart.vercel.app/api/products`)
+    fetch(`https://sourcing.procgen.in/api/products`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setProducts(data);
       })
       .catch(console.error);
 
-    fetch(`https://cpanel-swart.vercel.app/api/exchange-rates`)
+    fetch(`https://sourcing.procgen.in/api/exchange-rates`)
       .then(res => res.json())
       .then(data => {
         if (data && !data.error) setExchangeRates(data);
       })
       .catch(console.error);
     
-    fetch(`https://cpanel-swart.vercel.app/api/vendor-events/${params.id}`, {
+    fetch(`https://sourcing.procgen.in/api/vendor-events/${params.id}`, {
       headers: { 'Authorization': `Bearer ${t}` }
     })
       .then(res => {
@@ -96,7 +96,7 @@ export function EventDetails() {
             }
           } catch(e) {}
         }
-        fetch(`https://cpanel-swart.vercel.app/api/vendor-bids?eventId=${data.id}`, {
+        fetch(`https://sourcing.procgen.in/api/vendor-bids?eventId=${data.id}`, {
           headers: { 'Authorization': `Bearer ${t}` }
         })
           .then(res => res.json())
@@ -265,7 +265,7 @@ export function EventDetails() {
     setChatMessage('');
     
     try {
-      await fetch(`https://cpanel-swart.vercel.app/api/vendor-bids`, {
+      await fetch(`https://sourcing.procgen.in/api/vendor-bids`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ id: existingBid.id, chatHistory: updatedHistory })
@@ -276,12 +276,12 @@ export function EventDetails() {
   
   const handleAcceptCounterOffer = async (msg: any) => {
     if (!existingBid) return;
-    const newMsg = { id: Date.now(), sender: vendorInfo?.name || 'Vendor', type: 'text', msg: `✅ I have accepted your counter offer of ${msg.offerDetails.price}`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
+    const newMsg = { id: Date.now(), sender: vendorInfo?.name || 'Vendor', type: 'text', msg: `âœ… I have accepted your counter offer of ${msg.offerDetails.price}`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
     const updatedHistory = [...chatHistory, newMsg];
     setChatHistory(updatedHistory);
     
     try {
-      await fetch(`https://cpanel-swart.vercel.app/api/vendor-bids`, {
+      await fetch(`https://sourcing.procgen.in/api/vendor-bids`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ id: existingBid.id, chatHistory: updatedHistory })
@@ -292,12 +292,12 @@ export function EventDetails() {
 
   const handleRejectCounterOffer = async (msg: any) => {
     if (!existingBid) return;
-    const newMsg = { id: Date.now(), sender: vendorInfo?.name || 'Vendor', type: 'text', msg: `❌ I have rejected your counter offer of ${msg.offerDetails.price}`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
+    const newMsg = { id: Date.now(), sender: vendorInfo?.name || 'Vendor', type: 'text', msg: `âŒ I have rejected your counter offer of ${msg.offerDetails.price}`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
     const updatedHistory = [...chatHistory, newMsg];
     setChatHistory(updatedHistory);
     
     try {
-      await fetch(`https://cpanel-swart.vercel.app/api/vendor-bids`, {
+      await fetch(`https://sourcing.procgen.in/api/vendor-bids`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ id: existingBid.id, chatHistory: updatedHistory })
@@ -384,7 +384,7 @@ export function EventDetails() {
         }
       }
 
-      const res = await fetch(`https://cpanel-swart.vercel.app/api/vendor-bids`, {
+      const res = await fetch(`https://sourcing.procgen.in/api/vendor-bids`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({
@@ -416,7 +416,7 @@ export function EventDetails() {
     if (!event || (event.feedbackMode !== 'Rank Based' && event.type !== 'Rank based') || !vendorInfo) return;
 
     const pollRank = () => {
-      fetch(`https://cpanel-swart.vercel.app/api/vendor-rank?eventId=${event.id}&vendorName=${encodeURIComponent(vendorInfo.name)}`)
+      fetch(`https://sourcing.procgen.in/api/vendor-rank?eventId=${event.id}&vendorName=${encodeURIComponent(vendorInfo.name)}`)
         .then(res => res.json())
         .then(data => {
           if (data.rank) {
@@ -776,7 +776,7 @@ export function EventDetails() {
                     </div>
                     {currency !== baseCurrency && (
                       <div style={{ fontSize: '0.8rem', color: '#71717a', marginTop: '2px' }}>
-                        ≈ {convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {baseCurrency}
+                        â‰ˆ {convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {baseCurrency}
                       </div>
                     )}
                   </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import LocationAutocomplete from '../components/LocationAutocomplete';
 import { ArrowLeft, Clock, Save, FileText, CheckCircle2, Calculator, Info, Leaf, Upload, Hash, Percent } from 'lucide-react';
@@ -34,21 +34,21 @@ export function EventDetails() {
     setToken(t);
     if (v) setVendorInfo(JSON.parse(v));
 
-    fetch(`https://cpanel-swart.vercel.app/api/products`)
+    fetch(`https://sourcing.procgen.in/api/products`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setProducts(data);
       })
       .catch(console.error);
 
-    fetch(`https://cpanel-swart.vercel.app/api/exchange-rates`)
+    fetch(`https://sourcing.procgen.in/api/exchange-rates`)
       .then(res => res.json())
       .then(data => {
         if (data && !data.error) setExchangeRates(data);
       })
       .catch(console.error);
     
-    fetch(`https://cpanel-swart.vercel.app/api/vendor-events/${params.id}`, {
+    fetch(`https://sourcing.procgen.in/api/vendor-events/${params.id}`, {
       headers: { 'Authorization': `Bearer ${t}` }
     })
       .then(res => {
@@ -80,7 +80,7 @@ export function EventDetails() {
             }
           } catch(e) {}
         }
-        fetch(`https://cpanel-swart.vercel.app/api/vendor-bids?eventId=${data.id}`, {
+        fetch(`https://sourcing.procgen.in/api/vendor-bids?eventId=${data.id}`, {
           headers: { 'Authorization': `Bearer ${t}` }
         })
           .then(res => res.json())
@@ -192,7 +192,7 @@ export function EventDetails() {
     setChatMessage('');
     
     try {
-      await fetch(`https://cpanel-swart.vercel.app/api/vendor-bids`, {
+      await fetch(`https://sourcing.procgen.in/api/vendor-bids`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ id: existingBid.id, chatHistory: updatedHistory })
@@ -236,7 +236,7 @@ export function EventDetails() {
         }
       }
 
-      const res = await fetch(`https://cpanel-swart.vercel.app/api/vendor-bids`, {
+      const res = await fetch(`https://sourcing.procgen.in/api/vendor-bids`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({
@@ -265,7 +265,7 @@ export function EventDetails() {
     if (!event || event.feedbackMode !== 'Rank Based' || !vendorInfo) return;
 
     const pollRank = () => {
-      fetch(`https://cpanel-swart.vercel.app/api/vendor-rank?eventId=${event.id}&vendorName=${encodeURIComponent(vendorInfo.name)}`)
+      fetch(`https://sourcing.procgen.in/api/vendor-rank?eventId=${event.id}&vendorName=${encodeURIComponent(vendorInfo.name)}`)
         .then(res => res.json())
         .then(data => {
           if (data.rank) {
@@ -298,7 +298,7 @@ export function EventDetails() {
         </button>
         <div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 600, color: '#0f172a', margin: 0 }}>{event.title}</h1>
-          <p style={{ color: '#64748b', margin: '4px 0 0 0', fontSize: '0.875rem' }}>{event.refId} • {event.type}</p>
+          <p style={{ color: '#64748b', margin: '4px 0 0 0', fontSize: '0.875rem' }}>{event.refId} â€¢ {event.type}</p>
         </div>
       </div>
 
@@ -496,7 +496,7 @@ export function EventDetails() {
                     <div style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px solid #e2e8f0' }}>
                       {rankInfo && (
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px', backgroundColor: rankInfo.rank === 1 ? '#f0fdf4' : '#eff6ff', border: `2px solid ${rankInfo.rank === 1 ? '#22c55e' : '#3b82f6'}`, borderRadius: '12px', marginBottom: '24px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', animation: 'pulse 2s infinite' }}>
-                          <span style={{ fontSize: '1.5rem' }}>{rankInfo.rank === 1 ? '🏆' : '📊'}</span>
+                          <span style={{ fontSize: '1.5rem' }}>{rankInfo.rank === 1 ? 'ðŸ†' : 'ðŸ“Š'}</span>
                           <div>
                             <div style={{ fontSize: '1.1rem', fontWeight: 800, color: rankInfo.rank === 1 ? '#15803d' : '#1d4ed8' }}>
                               You are currently Rank #{rankInfo.rank}
@@ -518,7 +518,7 @@ export function EventDetails() {
                           </span>
                           {currency !== baseCurrency && (
                             <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '4px' }}>
-                              ≈ {convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {baseCurrency} (Buyer Currency)
+                              â‰ˆ {convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {baseCurrency} (Buyer Currency)
                             </div>
                           )}
                         </div>
@@ -549,10 +549,10 @@ export function EventDetails() {
                 style={{ width: '100%', padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', backgroundColor: '#fff', outline: 'none' }}
               >
                 <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="GBP">GBP (£)</option>
-                <option value="INR">INR (₹)</option>
-                <option value="JPY">JPY (¥)</option>
+                <option value="EUR">EUR (â‚¬)</option>
+                <option value="GBP">GBP (Â£)</option>
+                <option value="INR">INR (â‚¹)</option>
+                <option value="JPY">JPY (Â¥)</option>
                 <option value="AUD">AUD (A$)</option>
               </select>
               <div style={{ marginTop: '8px', fontSize: '0.75rem', color: '#64748b' }}>
@@ -596,7 +596,7 @@ export function EventDetails() {
             {/* Negotiation Chat Box */}
             {existingBid && (
               <div style={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
-                <h3 style={{ margin: '0 0 16px 0', fontSize: '1rem', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>💬 Direct Negotiation</h3>
+                <h3 style={{ margin: '0 0 16px 0', fontSize: '1rem', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>ðŸ’¬ Direct Negotiation</h3>
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '300px', overflowY: 'auto', marginBottom: '16px', padding: '16px', border: '1px solid #f1f5f9', borderRadius: '8px', backgroundColor: '#f8fafc' }}>
                   {chatHistory.length === 0 ? (
@@ -604,7 +604,7 @@ export function EventDetails() {
                   ) : (
                     chatHistory.map((msg: any) => (
                       <div key={msg.id} style={{ display: 'flex', flexDirection: 'column', alignItems: msg.sender === 'You' || msg.sender === 'Client' ? 'flex-start' : 'flex-end' }}>
-                        <div style={{ fontSize: '0.7rem', color: '#64748b', marginBottom: '4px' }}>{msg.sender === (vendorInfo?.name || 'Vendor') ? 'You' : 'Client'} • {msg.time}</div>
+                        <div style={{ fontSize: '0.7rem', color: '#64748b', marginBottom: '4px' }}>{msg.sender === (vendorInfo?.name || 'Vendor') ? 'You' : 'Client'} â€¢ {msg.time}</div>
                         {msg.type === 'counter_offer' ? (
                           <div style={{ backgroundColor: '#fff', border: '1px solid #10b981', padding: '12px', borderRadius: '8px', width: '80%' }}>
                             <div style={{ fontWeight: 600, color: '#0f172a', marginBottom: '8px', fontSize: '0.9rem' }}>Formal Counter Offer</div>

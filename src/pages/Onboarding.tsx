@@ -30,7 +30,7 @@ export function Onboarding() {
   };
 
   const getBaseUrl = () => {
-    let rawUrl = ('https://cpanel-swart.vercel.app').replace(/\/+$/, '');
+    let rawUrl = ('https://sourcing.procgen.in').replace(/\/+$/, '');
     if (!rawUrl.startsWith('http')) {
       rawUrl = 'https://' + rawUrl;
     }
