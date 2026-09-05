@@ -11,6 +11,7 @@ export function Login() {
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [previewUrl, setPreviewUrl] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -45,6 +46,7 @@ export function Login() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to request OTP');
       setSuccessMsg('OTP sent! Please check your email or SMS.');
+      if (data.previewUrl) { setPreviewUrl(data.previewUrl); }
       setTimeout(() => setStep('verify'), 1500);
     } catch (err: any) { setError(err.message); } 
     finally { setLoading(false); }
@@ -169,7 +171,7 @@ export function Login() {
           </div>
           
           {error && <div className="error-banner">{error}</div>}
-          {successMsg && <div className="error-banner" style={{ backgroundColor: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0' }}>{successMsg}</div>}
+          {successMsg && <div className="error-banner" style={{ backgroundColor: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0' }}>{successMsg}{previewUrl && <div style={{marginTop: '8px', fontWeight: 'bold'}}><a href={previewUrl} target="_blank" rel="noreferrer" style={{color: '#2563eb', textDecoration: 'underline'}}>UAT: Click here to view OTP Email</a></div>}</div>}
 
           <div style={{ display: loginMethod === 'forgot_password' ? 'none' : 'flex', gap: '8px', marginBottom: '24px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '8px' }}>
             <button 
