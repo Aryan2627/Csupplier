@@ -8,8 +8,8 @@ function walk(dir) {
         } else if (fullPath.endsWith('.tsx') || fullPath.endsWith('.ts')) {
             let content = fs.readFileSync(fullPath, 'utf8');
             if (content.includes('VITE_API_URL')) {
-                content = content.replace(/import\.meta\.env\.VITE_API_URL\s*\|\|\s*'http:\/\/localhost:3000'/g, "'https://sourcing.procgen.in'");
-                content = content.replace(/import\.meta\.env\.VITE_API_URL/g, "'https://sourcing.procgen.in'");
+                content = content.replace(/import\.meta\.env\.VITE_API_URL\s*\|\|\s*'http:\/\/localhost:3000'/g, "'https://cpanel-swart.vercel.app'");
+                content = content.replace(/import\.meta\.env\.VITE_API_URL/g, "'https://cpanel-swart.vercel.app'");
                 fs.writeFileSync(fullPath, content);
                 console.log('Fixed ' + fullPath);
             }

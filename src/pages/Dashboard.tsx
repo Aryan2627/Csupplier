@@ -14,7 +14,7 @@ export function Dashboard() {
     if (v && token) {
       const parsedVendor = JSON.parse(v);
       setVendor(parsedVendor);
-      fetch("https://sourcing.procgen.in/api/vendor-events", { headers: { "Authorization": "Bearer " + token } })
+      fetch("https://cpanel-swart.vercel.app/api/vendor-events", { headers: { "Authorization": "Bearer " + token } })
         .then(res => res.ok ? res.json() : [])
         .then(data => { if (Array.isArray(data)) setRecentEvents(data); setLoading(false); })
         .catch(() => setLoading(false));

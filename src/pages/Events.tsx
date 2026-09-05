@@ -16,7 +16,7 @@ export function Events() {
     if (v && token) {
       const parsedVendor = JSON.parse(v);
       setVendor(parsedVendor);
-      fetch("https://sourcing.procgen.in/api/vendor-events", {
+      fetch("https://cpanel-swart.vercel.app/api/vendor-events", {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then(async (res) => {

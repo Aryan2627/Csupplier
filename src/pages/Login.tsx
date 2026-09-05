@@ -26,7 +26,7 @@ export function Login() {
   }, []);
 
   const getBaseUrl = () => {
-    let rawUrl = ('https://sourcing.procgen.in').replace(/\/+$/, '');
+    let rawUrl = ('https://cpanel-swart.vercel.app').replace(/\/+$/, '');
     if (!rawUrl.startsWith('http')) {
       rawUrl = 'https://' + rawUrl;
     }
