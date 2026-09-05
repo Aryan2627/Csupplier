@@ -77,7 +77,7 @@ export function Login() {
     try {
       const res = await fetch(`${API_BASE}/api/vendor-auth`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'login', email, password })
+        body: JSON.stringify({ action: 'password_login', identifier: email, password })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Invalid credentials');
