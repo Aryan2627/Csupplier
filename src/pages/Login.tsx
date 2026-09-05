@@ -40,7 +40,7 @@ export function Login() {
     try {
       const res = await fetch(`${API_BASE}/api/auth/request-otp`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contact: email, source: 'vendor' })
+        body: JSON.stringify({ identifier: email, source: 'vendor' })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to request OTP');
@@ -57,7 +57,7 @@ export function Login() {
     try {
       const res = await fetch(`${API_BASE}/api/auth/verify-otp`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contact: email, otp, source: 'vendor' })
+        body: JSON.stringify({ identifier: email, otp, source: 'vendor' })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Invalid OTP');
