@@ -39,7 +39,7 @@ export function Login() {
     if (!email) { setError('Please enter your email or phone'); return; }
     setError(''); setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/auth/request-otp`, {
+      const res = await fetch(`${API_BASE}/api/vendor-auth`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'request', identifier: email })
       });
@@ -57,7 +57,7 @@ export function Login() {
     if (!otp) { setError('Please enter the OTP'); return; }
     setError(''); setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/auth/verify-otp`, {
+      const res = await fetch(`${API_BASE}/api/vendor-auth`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'verify', identifier: email, otp })
       });
@@ -65,7 +65,8 @@ export function Login() {
       if (!res.ok) throw new Error(data.error || 'Invalid OTP');
       localStorage.setItem('token', data.token);
       localStorage.setItem('vendor_token', data.token);
-      navigate('/vendor');
+        if (data.vendor) localStorage.setItem('vendor', JSON.stringify(data.vendor));
+        navigate('/vendor');
     } catch (err: any) { setError(err.message); }
     finally { setLoading(false); }
   };
@@ -83,7 +84,8 @@ export function Login() {
       if (!res.ok) throw new Error(data.error || 'Invalid credentials');
       localStorage.setItem('token', data.token);
       localStorage.setItem('vendor_token', data.token);
-      navigate('/vendor');
+        if (data.vendor) localStorage.setItem('vendor', JSON.stringify(data.vendor));
+        navigate('/vendor');
     } catch (err: any) { setError(err.message); }
     finally { setLoading(false); }
   };
