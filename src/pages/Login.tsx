@@ -167,13 +167,13 @@ export function Login() {
           <div className="login-header" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <h2>Supplier Portal</h2>
-              <span style={{ background: '#eab308', color: '#000', padding: '4px 10px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase' }}>UAT</span>
+              
             </div>
             <p>Sign in to your vendor account</p>
           </div>
           
           {error && <div className="error-banner">{error}</div>}
-          {successMsg && <div className="error-banner" style={{ backgroundColor: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0' }}>{successMsg}{previewUrl && <div style={{marginTop: '8px', fontWeight: 'bold'}}><a href={previewUrl} target="_blank" rel="noreferrer" style={{color: '#2563eb', textDecoration: 'underline'}}>UAT: Click here to view OTP Email</a></div>}</div>}
+          {successMsg && <div className="error-banner" style={{ backgroundColor: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0' }}>{successMsg}</div>}
 
           <div style={{ display: loginMethod === 'forgot_password' ? 'none' : 'flex', gap: '8px', marginBottom: '24px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '8px' }}>
             <button 
