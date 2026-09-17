@@ -14,6 +14,19 @@ export function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [showRegisterOption, setShowRegisterOption] = useState(false);
+
+  const handleRegisterNew = (targetEmail: string) => {
+    const em = targetEmail || email;
+    const v = {
+      email: em,
+      name: em ? em.split('@')[0] : 'New Supplier',
+      status: 'Pending Onboarding'
+    };
+    localStorage.setItem('vendor_info', JSON.stringify(v));
+    localStorage.setItem('vendor', JSON.stringify(v));
+    window.location.href = '/vendor/onboarding';
+  };
 
   const needsOnboarding = (vendor: any) => {
     if (!vendor) return true;
@@ -63,6 +76,7 @@ export function Login() {
     e.preventDefault();
     if (!email) return;
     setError('');
+    setShowRegisterOption(false);
     setLoading(true);
 
     try {
@@ -77,7 +91,11 @@ export function Login() {
         setStep('verify');
         if (data.previewUrl) setPreviewUrl(data.previewUrl);
       } else {
-        setError(data.error || 'Failed to request OTP');
+        const errTxt = data.error || 'Failed to request OTP';
+        setError(errTxt);
+        if (errTxt.toLowerCase().includes('not found')) {
+          setShowRegisterOption(true);
+        }
       }
     } catch (err: any) {
       setError('Network error');
@@ -151,6 +169,7 @@ export function Login() {
     e.preventDefault();
     if (!email || !password) return;
     setError('');
+    setShowRegisterOption(false);
     setLoading(true);
 
     try {
@@ -167,7 +186,11 @@ export function Login() {
         localStorage.setItem('vendor', JSON.stringify(data.vendor));
         window.location.href = needsOnboarding(data.vendor) ? '/vendor/onboarding' : '/vendor';
       } else {
-        setError(data.error || 'Invalid credentials');
+        const errTxt = data.error || 'Invalid credentials';
+        setError(errTxt);
+        if (errTxt.toLowerCase().includes('not found')) {
+          setShowRegisterOption(true);
+        }
       }
     } catch (err: any) {
       setError('Network error');
@@ -186,7 +209,24 @@ export function Login() {
         </div>
         
         {error && <div className="error-banner">{error}</div>}
-          {successMsg && <div className="error-banner" style={{ backgroundColor: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0', marginBottom: '16px', padding: '12px', borderRadius: '8px', fontSize: '0.9rem', textAlign: 'center' }}>{successMsg}</div>}
+        {showRegisterOption && (
+          <div style={{ backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '10px', padding: '16px', marginBottom: '16px', textAlign: 'center' }}>
+            <div style={{ fontWeight: 700, color: '#1e3a8a', fontSize: '0.92rem', marginBottom: '4px' }}>New Supplier Account</div>
+            <p style={{ margin: '0 0 12px 0', fontSize: '0.85rem', color: '#3b82f6', lineHeight: 1.4 }}>
+              No account was found for <strong>{email}</strong>. Would you like to register as a new supplier and complete your profile?
+            </p>
+            <button 
+              type="button" 
+              onClick={() => handleRegisterNew(email)}
+              style={{ width: '100%', padding: '10px 16px', backgroundColor: '#2563eb', color: '#fff', border: 'none', borderRadius: '7px', fontWeight: 700, fontSize: '0.88rem', cursor: 'pointer', transition: 'background 0.2s' }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#1d4ed8'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
+            >
+              Register & Start Onboarding →
+            </button>
+          </div>
+        )}
+        {successMsg && <div className="error-banner" style={{ backgroundColor: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0', marginBottom: '16px', padding: '12px', borderRadius: '8px', fontSize: '0.9rem', textAlign: 'center' }}>{successMsg}</div>}
 
         <div style={{ display: loginMethod === 'forgot_password' ? 'none' : 'flex', gap: '8px', marginBottom: '24px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '8px' }}>
           <button 
@@ -386,6 +426,17 @@ export function Login() {
             </button>
           </form>
         )}
+
+        <div style={{ textAlign: 'center', marginTop: '24px', paddingTop: '16px', borderTop: '1px solid #e2e8f0' }}>
+          <span style={{ fontSize: '0.85rem', color: '#64748b' }}>New to ProcGen? </span>
+          <button
+            type="button"
+            onClick={() => handleRegisterNew(email)}
+            style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, padding: 0 }}
+          >
+            Register as New Supplier →
+          </button>
+        </div>
       </div>
     </div>
   );
