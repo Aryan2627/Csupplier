@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
@@ -15,13 +15,39 @@ export function Login() {
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+  const needsOnboarding = (vendor: any) => {
+    if (!vendor) return true;
+    const s = (vendor.status || '').toLowerCase();
+    const isCompleted = s === 'active' || s === 'approved' || s === 'onboarded' || s === 'joined';
+    return !isCompleted;
+  };
+
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('vendor_token');
     if (token) {
       localStorage.setItem('token', token);
       localStorage.setItem('vendor_token', token);
-      window.location.href = '/vendor';
+      
+      fetch(`${getBaseUrl()}/api/vendor-auth`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ action: 'me' })
+      }).then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data && data.vendor) {
+            localStorage.setItem('vendor_info', JSON.stringify(data.vendor));
+            localStorage.setItem('vendor', JSON.stringify(data.vendor));
+            window.location.href = needsOnboarding(data.vendor) ? '/vendor/onboarding' : '/vendor';
+          } else {
+            const storedV = localStorage.getItem('vendor') || localStorage.getItem('vendor_info');
+            const vObj = storedV ? JSON.parse(storedV) : null;
+            window.location.href = needsOnboarding(vObj) ? '/vendor/onboarding' : '/vendor';
+          }
+        })
+        .catch(() => {
+          window.location.href = '/vendor/onboarding';
+        });
     }
   }, []);
 
@@ -78,7 +104,7 @@ export function Login() {
         localStorage.setItem('token', data.token);
         localStorage.setItem('vendor_info', JSON.stringify(data.vendor));
         localStorage.setItem('vendor', JSON.stringify(data.vendor));
-        window.location.href = (data.vendor.status === 'Onboarding in Progress' || data.vendor.status === 'Pending Onboarding' || data.vendor.status === 'Approval Pending') ? '/vendor/onboarding' : '/vendor';
+        window.location.href = needsOnboarding(data.vendor) ? '/vendor/onboarding' : '/vendor';
       } else {
         setError(data.error || 'Invalid OTP');
       }
@@ -139,7 +165,7 @@ export function Login() {
         localStorage.setItem('token', data.token);
         localStorage.setItem('vendor_info', JSON.stringify(data.vendor));
         localStorage.setItem('vendor', JSON.stringify(data.vendor));
-        window.location.href = (data.vendor.status === 'Onboarding in Progress' || data.vendor.status === 'Pending Onboarding' || data.vendor.status === 'Approval Pending') ? '/vendor/onboarding' : '/vendor';
+        window.location.href = needsOnboarding(data.vendor) ? '/vendor/onboarding' : '/vendor';
       } else {
         setError(data.error || 'Invalid credentials');
       }

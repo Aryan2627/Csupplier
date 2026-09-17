@@ -1,6 +1,6 @@
-﻿import React from "react";
+import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, CalendarDays, Gavel, ShoppingBag, Settings as SettingsIcon, LogOut, Bell } from "lucide-react";
+import { LayoutDashboard, CalendarDays, Gavel, ShoppingBag, Settings as SettingsIcon, LogOut, Bell, ClipboardList } from "lucide-react";
 import "./Layout.css";
 
 interface LayoutProps { children: React.ReactNode; }
@@ -12,7 +12,7 @@ export function Layout({ children }: LayoutProps) {
 
   React.useEffect(() => {
     try {
-      const v = localStorage.getItem("vendor");
+      const v = localStorage.getItem("vendor") || localStorage.getItem("vendor_info");
       if (v) { const p = JSON.parse(v); if (p.name) setVendorName(p.name); }
     } catch(e) {}
   }, []);
@@ -22,6 +22,7 @@ export function Layout({ children }: LayoutProps) {
     { name: "Events", path: "/events", icon: CalendarDays },
     { name: "Active Bids", path: "/bids", icon: Gavel },
     { name: "Purchase Orders", path: "/orders", icon: ShoppingBag },
+    { name: "Onboarding", path: "/vendor/onboarding", icon: ClipboardList },
     { name: "Settings", path: "/settings", icon: SettingsIcon },
   ];
 
@@ -29,6 +30,7 @@ export function Layout({ children }: LayoutProps) {
     "/vendor": "Dashboard", "/dashboard": "Dashboard",
     "/events": "Sourcing Events", "/bids": "Active Bids",
     "/orders": "Purchase Orders", "/settings": "Settings & Profile",
+    "/vendor/onboarding": "Supplier Onboarding", "/onboarding": "Supplier Onboarding",
   };
   const matchedKey = Object.keys(pageTitles).find(k => location.pathname === k || (k !== "/vendor" && location.pathname.startsWith(k)));
   const pageTitle = matchedKey ? pageTitles[matchedKey] : "Vendor Portal";

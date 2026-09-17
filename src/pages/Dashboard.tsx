@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FileText, CheckCircle2, ShoppingBag, TrendingUp, ArrowRight, Calendar, Clock } from "lucide-react";
 
@@ -9,15 +9,34 @@ export function Dashboard() {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    const v = localStorage.getItem("vendor");
+    const v = localStorage.getItem("vendor") || localStorage.getItem("vendor_info");
     const token = localStorage.getItem("token");
-    if (v && token) {
-      const parsedVendor = JSON.parse(v);
-      setVendor(parsedVendor);
+    if (token) {
+      if (v) {
+        try {
+          const parsedVendor = JSON.parse(v);
+          setVendor(parsedVendor);
+        } catch (e) {}
+      }
+      // Fetch fresh vendor events and vendor profile if needed
       fetch("https://cpanel-swart.vercel.app/api/vendor-events", { headers: { "Authorization": "Bearer " + token } })
         .then(res => res.ok ? res.json() : [])
         .then(data => { if (Array.isArray(data)) setRecentEvents(data); setLoading(false); })
         .catch(() => setLoading(false));
+
+      fetch("https://cpanel-swart.vercel.app/api/vendor-auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        body: JSON.stringify({ action: "me" })
+      })
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data && data.vendor) {
+            setVendor(data.vendor);
+            localStorage.setItem("vendor", JSON.stringify(data.vendor));
+            localStorage.setItem("vendor_info", JSON.stringify(data.vendor));
+          }
+        }).catch(() => {});
     } else { window.location.href = "/login"; }
   }, []);
 
@@ -25,6 +44,9 @@ export function Dashboard() {
 
   const now = new Date().getTime();
   const activeEvents = recentEvents.filter(e => !e.endTime || new Date(e.endTime).getTime() > now);
+
+  const vendorStatus = (vendor.status || "").toLowerCase();
+  const needsOnboarding = !(vendorStatus === "active" || vendorStatus === "approved" || vendorStatus === "onboarded" || vendorStatus === "joined");
 
   const stats = [
     { label: "Active Invitations", value: activeEvents.length, icon: <Calendar size={22} color="#2563eb" />, bg: "#eff6ff", border: "#bfdbfe", textColor: "#1e3a8a" },
@@ -44,12 +66,23 @@ export function Dashboard() {
     <div style={{ minHeight: "100vh", backgroundColor: "#f0f4f8", fontFamily: "system-ui, sans-serif" }}>
       <div style={{ backgroundColor: "#1e3a8a", padding: "32px" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <h1 style={{ margin: 0, fontSize: "1.8rem", fontWeight: 700, color: "#fff", letterSpacing: "-0.5px" }}>Welcome back, {vendor.name}!</h1>
+          <h1 style={{ margin: 0, fontSize: "1.8rem", fontWeight: 700, color: "#fff", letterSpacing: "-0.5px" }}>Welcome back, {vendor.name || "Supplier"}!</h1>
           <p style={{ margin: "6px 0 0 0", color: "#bfdbfe", fontSize: "0.95rem" }}>Here is your procurement activity at a glance.</p>
         </div>
       </div>
 
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "32px" }}>
+        {needsOnboarding && (
+          <div style={{ marginBottom: "24px", padding: "20px 24px", backgroundColor: "#fffbe6", border: "1px solid #ffe58f", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", boxShadow: "0 2px 6px rgba(0,0,0,0.03)" }}>
+            <div>
+              <div style={{ fontWeight: 700, color: "#d48806", fontSize: "1rem", marginBottom: "4px" }}>⚠️ Onboarding Profile Incomplete</div>
+              <div style={{ fontSize: "0.88rem", color: "#8c6b00" }}>Please complete your official supplier registration form to participate in sourcing events and receive purchase orders.</div>
+            </div>
+            <button onClick={() => navigate("/vendor/onboarding")} style={{ padding: "10px 20px", backgroundColor: "#d48806", color: "#fff", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "0.875rem", cursor: "pointer", whiteSpace: "nowrap" as const, flexShrink: 0 }}>
+              Complete Onboarding Now →
+            </button>
+          </div>
+        )}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", marginBottom: "32px" }}>
           {stats.map((s, i) => (
             <div key={i} style={{ backgroundColor: "#fff", borderRadius: "12px", border: "1px solid #e2e8f0", padding: "20px 24px", display: "flex", alignItems: "center", gap: "16px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
