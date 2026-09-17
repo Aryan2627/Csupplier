@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 
@@ -17,11 +17,40 @@ export function Onboarding() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    const v = localStorage.getItem('vendor_info');
-    if (v) {
-      const parsed = JSON.parse(v);
+    const rawVInfo = localStorage.getItem('vendor_info');
+    const rawV = localStorage.getItem('vendor');
+    const token = localStorage.getItem('token');
+    
+    let parsed: any = null;
+    if (rawVInfo) {
+      try { parsed = JSON.parse(rawVInfo); } catch (e) {}
+    }
+    if (!parsed && rawV) {
+      try { parsed = JSON.parse(rawV); } catch (e) {}
+    }
+
+    if (parsed) {
       setVendorInfo(parsed);
       setFormData(prev => ({ ...prev, phone: parsed.phone || '', city: parsed.city || '', type: parsed.type || '' }));
+    }
+
+    // Fallback: If vendor info is missing or incomplete, fetch from backend API
+    if (token) {
+      fetch(`${getBaseUrl()}/api/vendor-auth`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ action: 'me' })
+      })
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data && data.vendor) {
+            setVendorInfo(data.vendor);
+            localStorage.setItem('vendor_info', JSON.stringify(data.vendor));
+            localStorage.setItem('vendor', JSON.stringify(data.vendor));
+            setFormData(prev => ({ ...prev, phone: data.vendor.phone || '', city: data.vendor.city || '', type: data.vendor.type || '' }));
+          }
+        })
+        .catch(() => {});
     }
   }, []);
 
