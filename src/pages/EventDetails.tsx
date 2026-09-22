@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import LocationAutocomplete from '../components/LocationAutocomplete';
 import { ArrowLeft, Clock, Save, FileText, CheckCircle2, Calculator, Info, Leaf, Upload, Hash, Percent, ShieldCheck } from 'lucide-react';
@@ -276,7 +276,7 @@ export function EventDetails() {
   
   const handleAcceptCounterOffer = async (msg: any) => {
     if (!existingBid) return;
-    const newMsg = { id: Date.now(), sender: vendorInfo?.name || 'Vendor', type: 'text', msg: `✅ I have accepted your counter offer of ${msg.offerDetails.price}`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
+    const newMsg = { id: Date.now(), sender: vendorInfo?.name || 'Vendor', type: 'text', msg: `âœ… I have accepted your counter offer of ${msg.offerDetails.price}`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
     const updatedHistory = [...chatHistory, newMsg];
     setChatHistory(updatedHistory);
     
@@ -292,7 +292,7 @@ export function EventDetails() {
 
   const handleRejectCounterOffer = async (msg: any) => {
     if (!existingBid) return;
-    const newMsg = { id: Date.now(), sender: vendorInfo?.name || 'Vendor', type: 'text', msg: `❌ I have rejected your counter offer of ${msg.offerDetails.price}`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
+    const newMsg = { id: Date.now(), sender: vendorInfo?.name || 'Vendor', type: 'text', msg: `âŒ I have rejected your counter offer of ${msg.offerDetails.price}`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
     const updatedHistory = [...chatHistory, newMsg];
     setChatHistory(updatedHistory);
     
@@ -776,7 +776,7 @@ export function EventDetails() {
                     </div>
                     {currency !== baseCurrency && (
                       <div style={{ fontSize: '0.8rem', color: '#71717a', marginTop: '2px' }}>
-                        ≈ {convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {baseCurrency}
+                        â‰ˆ {convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {baseCurrency}
                       </div>
                     )}
                   </div>
