@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
@@ -174,6 +174,13 @@ export function Login() {
           
           {error && <div className="error-banner">{error}</div>}
           {successMsg && <div className="error-banner" style={{ backgroundColor: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0' }}>{successMsg}</div>}
+          {previewUrl && (
+            <div className="error-banner" style={{ backgroundColor: '#eff6ff', color: '#1e40af', border: '1px solid #bfdbfe', marginTop: '10px' }}>
+              <a href={previewUrl} target="_blank" rel="noreferrer" style={{ color: '#2563eb', fontWeight: 600, textDecoration: 'underline' }}>
+                [UAT] Click here to view Ethereal Mail OTP
+              </a>
+            </div>
+          )}
 
           <div style={{ display: loginMethod === 'forgot_password' ? 'none' : 'flex', gap: '8px', marginBottom: '24px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '8px' }}>
             <button 
