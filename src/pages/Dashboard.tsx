@@ -279,7 +279,7 @@ export function Dashboard() {
                   <Star size={16} color="#fbbf24" fill="#fbbf24" />
                   <span style={{ color: "#fff", fontWeight: 700, fontSize: "0.9rem" }}>Vendor Status</span>
                 </div>
-                <div style={{ display: "flex", items: "center", gap: "10px", marginBottom: "16px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
                   <AlertCircle size={14} color="#60a5fa" />
                   <span style={{ color: "#94a3b8", fontSize: "0.8rem" }}>Complete your profile to get full access to all events.</span>
                 </div>
