@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import LocationAutocomplete from '../components/LocationAutocomplete';
-import { ArrowLeft, Clock, Save, FileText, CheckCircle2, Calculator, Info, Leaf, Upload, Hash, Percent, ShieldCheck } from 'lucide-react';
+import {  ArrowLeft, Clock, Save, FileText, CheckCircle2, Calculator, Info, Leaf, Upload, Hash, Percent, ShieldCheck , Lock } from 'lucide-react';
 
 export function EventDetails() {
   const params = useParams();
@@ -447,6 +447,34 @@ export function EventDetails() {
   // Group by sections for display
   const sections = Array.from(new Set(templateFields.map((f: any) => f.section || 'General')));
 
+  
+  const isStageLocked = (targetIdx: number) => {
+    for (let i = 0; i < targetIdx; i++) {
+      const stage = parsedStages[i];
+      if (stage && stage.type && stage.type.toLowerCase().includes('tech')) {
+        const fields = stage.templateFields || [];
+        const hasMissing = fields.some((f: any) => {
+          const isCreator = f.role?.toLowerCase() === 'creator';
+          const isCalc = f.role?.toLowerCase() === 'calculation';
+          if (f.required && !isCreator && !isCalc) {
+            let isVisible = true;
+            if (f.dependsOn && f.dependsOn.field) {
+               const parentKey = f.key.replace(f.originalKey, f.dependsOn.field);
+               isVisible = formData[parentKey] === f.dependsOn.value;
+            }
+            const val = formData[f.key];
+            if (isVisible && (val === undefined || val === null || val.toString().trim() === '')) {
+              return true;
+            }
+          }
+          return false;
+        });
+        if (hasMissing) return true;
+      }
+    }
+    return false;
+  };
+
   return (
     <div style={{ backgroundColor: '#f0f4f8', color: '#18181b', minHeight: '100vh', fontFamily: 'system-ui, sans-serif' }}>
       
@@ -516,34 +544,43 @@ export function EventDetails() {
           </div>
 
           {/* Tabs */}
-          {parsedStages.length > 1 && (
-            <div style={{ display: 'flex', gap: '0', padding: '0 32px', borderBottom: '1px solid #e4e4e7', backgroundColor: '#fff', overflowX: 'auto' }}>
-              {parsedStages.map((stage: any, idx: number) => {
-                const isActive = idx === activeStageIndex;
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveStageIndex(idx)}
-                    style={{
-                      padding: '16px 24px', 
-                      fontSize: '0.9rem', 
-                      fontWeight: isActive ? 600 : 500, 
-                      cursor: 'pointer',
-                      backgroundColor: 'transparent',
-                      color: isActive ? '#2563eb' : '#71717a',
-                      border: 'none',
-                      borderBottom: isActive ? '2px solid #2563eb' : '2px solid transparent',
-                      transition: 'all 0.2s',
-                      whiteSpace: 'nowrap',
-                      display: 'flex', alignItems: 'center', gap: '8px'
-                    }}
-                  >
-                    {stage.type}
-                  </button>
-                )
-              })}
-            </div>
-          )}
+            {parsedStages.length > 1 && (
+              <div style={{ display: 'flex', gap: '0', padding: '0 32px', borderBottom: '1px solid #e4e4e7', backgroundColor: '#fff', overflowX: 'auto' }}>
+                {parsedStages.map((stage: any, idx: number) => {
+                  const isActive = idx === activeStageIndex;
+                  const locked = isStageLocked(idx);
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        if (locked) {
+                          alert("Please complete the required fields in the Technical stage first.");
+                          return;
+                        }
+                        setActiveStageIndex(idx);
+                      }}
+                      style={{
+                        padding: '16px 24px', 
+                        fontSize: '0.9rem', 
+                        fontWeight: isActive ? 600 : 500, 
+                        cursor: locked ? 'not-allowed' : 'pointer',
+                        backgroundColor: 'transparent',
+                        color: locked ? '#a1a1aa' : (isActive ? '#2563eb' : '#71717a'),
+                        border: 'none',
+                        borderBottom: isActive ? '2px solid #2563eb' : '2px solid transparent',
+                        transition: 'all 0.2s',
+                        whiteSpace: 'nowrap',
+                        display: 'flex', alignItems: 'center', gap: '8px'
+                      }}
+                      title={locked ? "Complete previous technical stages to unlock" : ""}
+                    >
+                      {locked && <Lock size={14} color="#a1a1aa" />}
+                      {stage.type}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
 
           {/* Form Body */}
           <div style={{ padding: '32px' }}>
