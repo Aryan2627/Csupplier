@@ -32,7 +32,9 @@ export function Settings() {
           taxId: v.taxId || "",
           type: v.type || "Standard Vendor"
         });
-      } catch (e) {}
+      } catch (e) {
+        setVendor({ name: "Supplier", status: "Pending Onboarding" });
+      }
     } else {
       window.location.href = "/login";
     }

@@ -16,7 +16,11 @@ export function Dashboard() {
         try {
           const parsedVendor = JSON.parse(v);
           setVendor(parsedVendor);
-        } catch (e) {}
+        } catch (e) {
+          setVendor({ name: "Supplier", status: "Pending Onboarding" });
+        }
+      } else {
+        setVendor({ name: "Supplier", status: "Pending Onboarding" });
       }
       // Fetch fresh vendor events and vendor profile if needed
       fetch("https://cpanel-swart.vercel.app/api/vendor-events", { headers: { "Authorization": "Bearer " + token } })
@@ -40,7 +44,7 @@ export function Dashboard() {
     } else { window.location.href = "/login"; }
   }, []);
 
-  if (!vendor) return <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "60vh", color: "#64748b" }}>Loading...</div>;
+  if (!vendor && loading) return <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "60vh", color: "#64748b" }}>Loading...</div>;
 
   const now = new Date().getTime();
   const activeEvents = recentEvents.filter(e => !e.endTime || new Date(e.endTime).getTime() > now);
