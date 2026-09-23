@@ -93,14 +93,15 @@ export function Onboarding() {
     
     setLoading(true);
 
-    const updatedInfo = {
-      ...(vendorInfo || {}),
-      ...formData,
-      status: 'Onboarded'
-    };
-
     try {
       const token = localStorage.getItem('token');
+
+      if (!token) {
+        setError('Your session has expired. Please log in again.');
+        window.scrollTo(0, 0);
+        setLoading(false);
+        return;
+      }
       
       const payload = {
         ...formData,
@@ -121,24 +122,24 @@ export function Onboarding() {
       
       if (res.ok) {
         const data = await res.json().catch(() => null);
-        const finalVendor = (data && data.vendor) ? { ...data.vendor, status: 'Onboarded' } : updatedInfo;
+        const finalVendor = (data && data.vendor) ? { ...data.vendor, status: 'Onboarded' } : { ...(vendorInfo || {}), ...formData, status: 'Onboarded' };
         localStorage.setItem('vendor_info', JSON.stringify(finalVendor));
         localStorage.setItem('vendor', JSON.stringify(finalVendor));
         setVendorInfo(finalVendor);
         setSuccess(true);
       } else {
-        // Fallback for local update
-        localStorage.setItem('vendor_info', JSON.stringify(updatedInfo));
-        localStorage.setItem('vendor', JSON.stringify(updatedInfo));
-        setVendorInfo(updatedInfo);
-        setSuccess(true);
+        const errData = await res.json().catch(() => null);
+        const errMsg = (errData && errData.error) ? errData.error : 'Failed to submit onboarding form. Please try again.';
+        if (res.status === 401) {
+          setError('Your session has expired. Please log in again.');
+        } else {
+          setError(errMsg);
+        }
+        window.scrollTo(0, 0);
       }
     } catch (err) {
-      // Local fallback on network disconnect
-      localStorage.setItem('vendor_info', JSON.stringify(updatedInfo));
-      localStorage.setItem('vendor', JSON.stringify(updatedInfo));
-      setVendorInfo(updatedInfo);
-      setSuccess(true);
+      setError('Network error. Please check your internet connection and try again.');
+      window.scrollTo(0, 0);
     } finally {
       setLoading(false);
     }
@@ -160,7 +161,7 @@ export function Onboarding() {
 
         {error && <div style={{ padding: '12px', backgroundColor: '#fee2e2', color: '#b91c1c', borderRadius: '8px', marginBottom: '24px' }}>{error}</div>}
         
-        {success || vendorInfo?.status === 'Approval Pending' || vendorInfo?.status === 'Onboarded' || vendorInfo?.status === 'Joined' ? (
+        {success || vendorInfo?.status === 'Approval Pending' || vendorInfo?.status === 'Pending Review' || vendorInfo?.status === 'Onboarded' || vendorInfo?.status === 'Joined' ? (
           <div style={{ padding: '36px', backgroundColor: '#ecfdf5', borderRadius: '16px', border: '1px solid #a7f3d0', textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.03)' }}>
             <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎉</div>
             <h2 style={{ color: '#065f46', marginBottom: '8px', fontSize: '1.5rem', fontWeight: 700 }}>Onboarding Profile Completed!</h2>
