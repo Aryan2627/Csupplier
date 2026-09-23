@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layout } from '../components/Layout';
+
 
 export function Onboarding() {
   const navigate = useNavigate();
@@ -151,7 +151,7 @@ export function Onboarding() {
   );
 
   return (
-    <Layout>
+    <>
       <div style={{ padding: '24px', maxWidth: '900px', margin: '0 auto' }}>
         <div style={{ marginBottom: '24px' }}>
           <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>Vendor Registration & Onboarding</h1>
@@ -331,6 +331,6 @@ export function Onboarding() {
           </form>
         )}
       </div>
-    </Layout>
+    </>
   );
 }
