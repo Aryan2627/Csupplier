@@ -211,7 +211,7 @@ export function Login() {
         {error && <div className="error-banner">{error}</div>}
         {showRegisterOption && (
           <div style={{ backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '10px', padding: '16px', marginBottom: '16px', textAlign: 'center' }}>
-            <div style={{ fontWeight: 700, color: '#1e3a8a', fontSize: '0.92rem', marginBottom: '4px' }}>New Supplier Account</div>
+            <div style={{ fontWeight: 700, color: '#071330', fontSize: '0.92rem', marginBottom: '4px' }}>New Supplier Account</div>
             <p style={{ margin: '0 0 12px 0', fontSize: '0.85rem', color: '#3b82f6', lineHeight: 1.4 }}>
               No account was found for <strong>{email}</strong>. Would you like to register as a new supplier and complete your profile?
             </p>

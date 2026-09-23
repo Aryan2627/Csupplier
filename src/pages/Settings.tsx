@@ -79,7 +79,7 @@ export function Settings() {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f0f4f8", fontFamily: "system-ui, sans-serif" }}>
       {/* Header */}
-      <div style={{ backgroundColor: "#1e3a8a", padding: "32px" }}>
+      <div style={{ backgroundColor: "#071330", padding: "32px" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <h1 style={{ margin: 0, fontSize: "1.8rem", fontWeight: 700, color: "#fff" }}>Profile & Settings</h1>
           <p style={{ margin: "6px 0 0 0", color: "#bfdbfe", fontSize: "0.95rem" }}>View and update your company details and business credentials.</p>
@@ -106,7 +106,7 @@ export function Settings() {
             {/* Company Info */}
             <div style={{ backgroundColor: "#fff", borderRadius: "16px", border: "1px solid #e2e8f0", overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
               <div style={{ padding: "20px 28px", borderBottom: "1px solid #f1f5f9", backgroundColor: "#f8fafc" }}>
-                <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700, color: "#1e3a8a", display: "flex", alignItems: "center", gap: "8px" }}>
+                <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700, color: "#071330", display: "flex", alignItems: "center", gap: "8px" }}>
                   <Building size={18} color="#2563eb" /> Company Information
                 </h2>
               </div>
@@ -127,7 +127,7 @@ export function Settings() {
             {/* Contact Details */}
             <div style={{ backgroundColor: "#fff", borderRadius: "16px", border: "1px solid #e2e8f0", overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
               <div style={{ padding: "20px 28px", borderBottom: "1px solid #f1f5f9", backgroundColor: "#f8fafc" }}>
-                <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700, color: "#1e3a8a", display: "flex", alignItems: "center", gap: "8px" }}>
+                <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700, color: "#071330", display: "flex", alignItems: "center", gap: "8px" }}>
                   <Mail size={18} color="#2563eb" /> Contact & Credentials
                 </h2>
               </div>
@@ -167,7 +167,7 @@ export function Settings() {
           <div style={{ flex: "1 1 300px", display: "flex", flexDirection: "column", gap: "20px" }}>
             <div style={{ backgroundColor: "#fff", borderRadius: "16px", border: "1px solid #e2e8f0", overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
               <div style={{ padding: "20px 28px", borderBottom: "1px solid #f1f5f9", backgroundColor: "#f8fafc" }}>
-                <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700, color: "#1e3a8a", display: "flex", alignItems: "center", gap: "8px" }}>
+                <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700, color: "#071330", display: "flex", alignItems: "center", gap: "8px" }}>
                   <Briefcase size={18} color="#2563eb" /> Business Profile
                 </h2>
               </div>
@@ -192,7 +192,7 @@ export function Settings() {
 
             <div style={{ backgroundColor: "#fff", borderRadius: "16px", border: "1px solid #e2e8f0", overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
               <div style={{ padding: "20px 28px", borderBottom: "1px solid #f1f5f9", backgroundColor: "#f8fafc" }}>
-                <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700, color: "#1e3a8a", display: "flex", alignItems: "center", gap: "8px" }}>
+                <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700, color: "#071330", display: "flex", alignItems: "center", gap: "8px" }}>
                   <Tag size={18} color="#2563eb" /> Supplied Categories
                 </h2>
               </div>

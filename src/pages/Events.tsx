@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, Search, Clock, FileText, Package, Calendar, CheckCircle2, AlertCircle, Inbox } from "lucide-react";
 
@@ -88,7 +88,7 @@ export function Events() {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f0f4f8", fontFamily: "system-ui, sans-serif" }}>
       {/* Blue Header */}
-      <div style={{ backgroundColor: "#1e3a8a", padding: "32px" }}>
+      <div style={{ backgroundColor: "#071330", padding: "32px" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <h1 style={{ margin: 0, fontSize: "1.8rem", fontWeight: 700, color: "#fff", letterSpacing: "-0.5px" }}>
             Sourcing Events
@@ -103,7 +103,7 @@ export function Events() {
         {/* Stats Row */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginBottom: "32px" }}>
           {[
-            { label: "Active Invitations", value: activeEvents.length, icon: <FileText size={20} color="#2563eb" />, bg: "#eff6ff", border: "#bfdbfe", textColor: "#1e3a8a" },
+            { label: "Active Invitations", value: activeEvents.length, icon: <FileText size={20} color="#2563eb" />, bg: "#eff6ff", border: "#bfdbfe", textColor: "#071330" },
             { label: "Closed Events", value: historyEvents.length, icon: <CheckCircle2 size={20} color="#16a34a" />, bg: "#f0fdf4", border: "#86efac", textColor: "#15803d" },
             { label: "Total Events", value: events.length, icon: <Calendar size={20} color="#7c3aed" />, bg: "#faf5ff", border: "#d8b4fe", textColor: "#6d28d9" },
           ].map((stat, i) => (
@@ -131,7 +131,7 @@ export function Events() {
                   onClick={() => setActiveTab(tab)}
                   style={{
                     padding: "8px 20px", border: "none", borderRadius: "7px", cursor: "pointer", fontWeight: 600, fontSize: "0.875rem",
-                    backgroundColor: activeTab === tab ? "#1e3a8a" : "transparent",
+                    backgroundColor: activeTab === tab ? "#071330" : "transparent",
                     color: activeTab === tab ? "#fff" : "#64748b",
                     transition: "all 0.2s"
                   }}
@@ -234,19 +234,19 @@ export function Events() {
                         color: activeTab === "history" ? "#64748b" : "#15803d",
                         border: `1px solid ${activeTab === "history" ? "#e2e8f0" : "#86efac"}`
                       }}>
-                        {activeTab === "history" ? "Closed" : "✓ Invited"}
+                        {activeTab === "history" ? "Closed" : "? Invited"}
                       </span>
                       <button
                         onClick={(e) => { e.stopPropagation(); navigate(`/events/${event.id}`); }}
                         style={{
-                          padding: "9px 20px", backgroundColor: activeTab === "history" ? "#f8fafc" : "#1e3a8a",
+                          padding: "9px 20px", backgroundColor: activeTab === "history" ? "#f8fafc" : "#071330",
                           color: activeTab === "history" ? "#475569" : "#fff",
                           border: activeTab === "history" ? "1px solid #e2e8f0" : "none",
                           borderRadius: "8px", fontWeight: 600, fontSize: "0.85rem", cursor: "pointer",
                           display: "flex", alignItems: "center", gap: "8px", transition: "all 0.2s"
                         }}
                         onMouseOver={(e) => { e.currentTarget.style.backgroundColor = activeTab === "history" ? "#f1f5f9" : "#1d4ed8"; }}
-                        onMouseOut={(e) => { e.currentTarget.style.backgroundColor = activeTab === "history" ? "#f8fafc" : "#1e3a8a"; }}
+                        onMouseOut={(e) => { e.currentTarget.style.backgroundColor = activeTab === "history" ? "#f8fafc" : "#071330"; }}
                       >
                         {activeTab === "history" ? "View" : "Open Event"} <ArrowRight size={15} />
                       </button>

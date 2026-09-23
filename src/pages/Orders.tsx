@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShoppingBag, FileCheck, CheckCircle2, Clock, Inbox } from "lucide-react";
 
@@ -37,7 +37,7 @@ export function Orders() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f0f4f8", fontFamily: "system-ui, sans-serif" }}>
-      <div style={{ backgroundColor: "#1e3a8a", padding: "32px" }}>
+      <div style={{ backgroundColor: "#071330", padding: "32px" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <h1 style={{ margin: 0, fontSize: "1.8rem", fontWeight: 700, color: "#fff", display: "flex", alignItems: "center", gap: "12px" }}>
@@ -88,7 +88,7 @@ export function Orders() {
 
                   {/* Card Body */}
                   <div style={{ padding: "20px 24px" }}>
-                    <h3 style={{ margin: "0 0 16px 0", fontSize: "0.95rem", color: "#1e3a8a", fontWeight: 700, lineHeight: 1.4 }}>{order.title}</h3>
+                    <h3 style={{ margin: "0 0 16px 0", fontSize: "0.95rem", color: "#071330", fontWeight: 700, lineHeight: 1.4 }}>{order.title}</h3>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div>
                         <div style={{ fontSize: "0.7rem", color: "#94a3b8", textTransform: "uppercase" as const, letterSpacing: "0.5px", fontWeight: 600 }}>Total Amount</div>

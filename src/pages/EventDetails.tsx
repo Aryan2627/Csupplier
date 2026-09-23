@@ -508,7 +508,7 @@ export function EventDetails() {
       )}
 
       {/* Header Banner */}
-      <div style={{ backgroundColor: '#1e3a8a', padding: '32px' }}>
+      <div style={{ backgroundColor: '#071330', padding: '32px' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '20px' }}>
           <button onClick={() => navigate('/vendor/events')} style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', color: '#fff' }}>
             <ArrowLeft size={18} />
@@ -537,7 +537,7 @@ export function EventDetails() {
         <div style={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #e4e4e7', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
           
           <div style={{ padding: '24px 32px', borderBottom: '1px solid #e4e4e7', backgroundColor: '#f8fafc' }}>
-            <h2 style={{ margin: 0, fontSize: '1.2rem', color: '#1e3a8a', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}>
+            <h2 style={{ margin: 0, fontSize: '1.2rem', color: '#071330', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}>
               <Calculator size={18} color="#2563eb" /> Event Requirements & Response
             </h2>
             <p style={{ margin: '4px 0 0 26px', color: '#64748b', fontSize: '0.9rem' }}>Please complete the necessary technical and commercial details below.</p>
@@ -608,7 +608,7 @@ export function EventDetails() {
                     <div key={section}>
                       <div style={{ marginBottom: '20px', paddingBottom: '8px', borderBottom: '1px solid #e0e7ff', display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <div style={{ width: '4px', height: '18px', backgroundColor: '#2563eb', borderRadius: '2px' }} />
-                        <h3 style={{ margin: 0, fontWeight: 600, color: '#1e3a8a', fontSize: '1.05rem', letterSpacing: '-0.2px' }}>{section}</h3>
+                        <h3 style={{ margin: 0, fontWeight: 600, color: '#071330', fontSize: '1.05rem', letterSpacing: '-0.2px' }}>{section}</h3>
                       </div>
                       
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -634,7 +634,7 @@ export function EventDetails() {
                               flexShrink: 0
                             }}>
                               <span style={{ fontSize: '0.65rem', textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.05em' }}>Item</span>
-                              <span style={{ fontSize: '1.3rem', fontWeight: 700, color: '#1e3a8a' }}>{gIdx + 1}</span>
+                              <span style={{ fontSize: '1.3rem', fontWeight: 700, color: '#071330' }}>{gIdx + 1}</span>
                             </div>
                             <div style={{ 
                               display: 'flex', 
@@ -759,9 +759,9 @@ export function EventDetails() {
         <div style={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #e4e4e7', padding: '24px 32px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
-              <h3 style={{ margin: '0 0 8px 0', fontSize: '1.2rem', color: '#1e3a8a', fontWeight: 600 }}>Finalize & Submit</h3>
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '1.2rem', color: '#071330', fontWeight: 600 }}>Finalize & Submit</h3>
               <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
-                Buyer Evaluation Currency: <strong style={{color: '#1e3a8a'}}>{event.baseCurrency || 'INR'}</strong>
+                Buyer Evaluation Currency: <strong style={{color: '#071330'}}>{event.baseCurrency || 'INR'}</strong>
               </div>
             </div>
             
