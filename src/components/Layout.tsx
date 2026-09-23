@@ -42,8 +42,8 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <div style={{ display: "flex", height: "100vh", overflow: "hidden", backgroundColor: "#f0f4f8", fontFamily: "system-ui, sans-serif" }}>
-      <aside style={{ width: "240px", flexShrink: 0, backgroundColor: "#1e3a8a", display: "flex", flexDirection: "column", height: "100vh" }}>
-        <div style={{ padding: "24px 20px", display: "flex", alignItems: "center", gap: "12px", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+      <aside style={{ width: "240px", flexShrink: 0, backgroundColor: "#071330", borderRight: "1px solid rgba(255,255,255,0.05)", display: "flex", flexDirection: "column", height: "100vh" }}>
+        <div style={{ padding: "24px 20px", display: "flex", alignItems: "center", gap: "12px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
           <img src="/logo.png" alt="Logo" style={{ width: "36px", height: "36px", objectFit: "contain" }} />
           <span style={{ color: "#fff", fontWeight: 700, fontSize: "1.05rem", letterSpacing: "-0.3px" }}>VendorPortal</span>
         </div>
@@ -54,7 +54,7 @@ export function Layout({ children }: LayoutProps) {
               ? location.pathname === "/vendor" || location.pathname === "/dashboard"
               : location.pathname.startsWith(item.path);
             return (
-              <Link key={item.name} to={item.path} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "11px 14px", borderRadius: "8px", textDecoration: "none", color: isActive ? "#fff" : "#93c5fd", backgroundColor: isActive ? "rgba(255,255,255,0.15)" : "transparent", fontWeight: isActive ? 600 : 400, fontSize: "0.9rem", transition: "all 0.2s" }}
+              <Link key={item.name} to={item.path} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "11px 14px", borderRadius: "8px", textDecoration: "none", color: isActive ? "#fff" : "rgba(255,255,255,0.7)", backgroundColor: isActive ? "rgba(255,255,255,0.1)" : "transparent", fontWeight: isActive ? 600 : 400, fontSize: "0.9rem", transition: "all 0.2s" }}
                 onMouseOver={(e) => { if (!isActive) e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)"; }}
                 onMouseOut={(e) => { if (!isActive) e.currentTarget.style.backgroundColor = "transparent"; }}
               >
@@ -63,9 +63,9 @@ export function Layout({ children }: LayoutProps) {
             );
           })}
         </nav>
-        <div style={{ padding: "12px", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
-          <button onClick={handleLogout} style={{ width: "100%", display: "flex", alignItems: "center", gap: "12px", padding: "11px 14px", borderRadius: "8px", border: "none", cursor: "pointer", color: "#fca5a5", backgroundColor: "transparent", fontSize: "0.9rem", fontWeight: 500 }}
-            onMouseOver={(e) => { e.currentTarget.style.backgroundColor = "rgba(239,68,68,0.15)"; }}
+        <div style={{ padding: "12px", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+          <button onClick={handleLogout} style={{ width: "100%", display: "flex", alignItems: "center", gap: "12px", padding: "11px 14px", borderRadius: "8px", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.7)", backgroundColor: "transparent", fontSize: "0.9rem", fontWeight: 500 }}
+            onMouseOver={(e) => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)"; }}
             onMouseOut={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
           >
             <LogOut size={18} /><span>Logout</span>
@@ -75,13 +75,13 @@ export function Layout({ children }: LayoutProps) {
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         <header style={{ height: "64px", backgroundColor: "#fff", borderBottom: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 32px", flexShrink: 0, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-          <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#1e3a8a" }}>{pageTitle}</div>
+          <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#071330" }}>{pageTitle}</div>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <button style={{ background: "none", border: "none", cursor: "pointer", padding: "8px", borderRadius: "8px", color: "#64748b", display: "flex" }}>
               <Bell size={20} />
             </button>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#1e3a8a", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: "0.9rem" }}>
+              <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#071330", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: "0.9rem" }}>
                 {vendorName.charAt(0).toUpperCase()}
               </div>
               <span style={{ fontWeight: 600, color: "#374151", fontSize: "0.9rem" }}>{vendorName}</span>
