@@ -132,6 +132,11 @@ export function Onboarding() {
         const errMsg = (errData && errData.error) ? errData.error : 'Failed to submit onboarding form. Please try again.';
         if (res.status === 401) {
           setError('Your session has expired. Please log in again.');
+        } else if (res.status === 410) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('vendor');
+          localStorage.removeItem('vendor_info');
+          setError('Your 15-day onboarding validity period has expired and your registration has been cleared. Please ask your buyer to send a new invitation.');
         } else {
           setError(errMsg);
         }
@@ -144,6 +149,15 @@ export function Onboarding() {
       setLoading(false);
     }
   };
+
+  const getDaysRemaining = () => {
+    if (!vendorInfo?.createdAt) return 15;
+    const createdMs = new Date(vendorInfo.createdAt).getTime();
+    const elapsedDays = (Date.now() - createdMs) / (1000 * 60 * 60 * 24);
+    return Math.max(0, Math.ceil(15 - elapsedDays));
+  };
+
+  const daysRemaining = getDaysRemaining();
 
   const SectionTitle = ({ title }: { title: string }) => (
     <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e2e8f0', paddingBottom: '8px', marginTop: '32px', marginBottom: '16px' }}>
@@ -160,6 +174,44 @@ export function Onboarding() {
         </div>
 
         {error && <div style={{ padding: '12px', backgroundColor: '#fee2e2', color: '#b91c1c', borderRadius: '8px', marginBottom: '24px' }}>{error}</div>}
+
+        {/* 15-Day Registration Validity Notice */}
+        {!(success || vendorInfo?.status === 'Approval Pending' || vendorInfo?.status === 'Pending Review' || vendorInfo?.status === 'Onboarded' || vendorInfo?.status === 'Joined') && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '12px 18px',
+            backgroundColor: daysRemaining <= 3 ? '#fff1f2' : '#f0fdf4',
+            border: `1px solid ${daysRemaining <= 3 ? '#fecdd3' : '#bbf7d0'}`,
+            borderRadius: '10px',
+            marginBottom: '20px',
+            fontSize: '0.88rem'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '1.2rem' }}>⏳</span>
+              <div>
+                <strong style={{ color: daysRemaining <= 3 ? '#be123c' : '#166534' }}>
+                  15-Day Registration Validity:
+                </strong>
+                <span style={{ color: daysRemaining <= 3 ? '#9f1239' : '#15803d', marginLeft: '6px' }}>
+                  You have <strong>{daysRemaining} day{daysRemaining !== 1 ? 's' : ''}</strong> remaining to complete and submit your onboarding application. Incomplete registrations expire after 15 days.
+                </span>
+              </div>
+            </div>
+            <div style={{
+              backgroundColor: daysRemaining <= 3 ? '#fda4af' : '#86efac',
+              color: daysRemaining <= 3 ? '#881337' : '#14532d',
+              padding: '4px 10px',
+              borderRadius: '20px',
+              fontWeight: 700,
+              fontSize: '0.75rem',
+              whiteSpace: 'nowrap'
+            }}>
+              {daysRemaining} days left
+            </div>
+          </div>
+        )}
         
         {success || vendorInfo?.status === 'Approval Pending' || vendorInfo?.status === 'Pending Review' || vendorInfo?.status === 'Onboarded' || vendorInfo?.status === 'Joined' ? (
           <div style={{ padding: '36px', backgroundColor: '#ecfdf5', borderRadius: '16px', border: '1px solid #a7f3d0', textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.03)' }}>

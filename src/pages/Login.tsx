@@ -5,28 +5,17 @@ import './Login.css';
 export function Login() {
   const navigate = useNavigate();
   const [loginMethod, setLoginMethod] = useState<'otp' | 'password' | 'forgot_password'>('otp');
-  const [step, setStep] = useState<'request' | 'verify'>('request');
+  const [step, setStep] = useState<'request' | 'verify' | 'create_password'>('request');
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [showRegisterOption, setShowRegisterOption] = useState(false);
-
-  const handleRegisterNew = (targetEmail: string) => {
-    const em = targetEmail || email;
-    const v = {
-      email: em,
-      name: em ? em.split('@')[0] : 'New Supplier',
-      status: 'Pending Onboarding'
-    };
-    localStorage.setItem('vendor_info', JSON.stringify(v));
-    localStorage.setItem('vendor', JSON.stringify(v));
-    window.location.href = '/vendor/onboarding';
-  };
+  const [needsPasswordSetup, setNeedsPasswordSetup] = useState(false);
 
   const needsOnboarding = (vendor: any) => {
     if (!vendor) return true;
@@ -76,7 +65,7 @@ export function Login() {
     e.preventDefault();
     if (!email) return;
     setError('');
-    setShowRegisterOption(false);
+    setNeedsPasswordSetup(false);
     setLoading(true);
 
     try {
@@ -91,14 +80,10 @@ export function Login() {
         setStep('verify');
         if (data.previewUrl) setPreviewUrl(data.previewUrl);
       } else {
-        const errTxt = data.error || 'Failed to request OTP';
-        setError(errTxt);
-        if (errTxt.toLowerCase().includes('not found')) {
-          setShowRegisterOption(true);
-        }
+        setError(data.error || 'Failed to request login code');
       }
     } catch (err: any) {
-      setError('Network error');
+      setError('Network error. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -119,24 +104,87 @@ export function Login() {
       
       const data = await res.json();
       if (res.ok) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('vendor_info', JSON.stringify(data.vendor));
-        localStorage.setItem('vendor', JSON.stringify(data.vendor));
-        window.location.href = needsOnboarding(data.vendor) ? '/vendor/onboarding' : '/vendor';
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+        }
+        if (data.vendor) {
+          localStorage.setItem('vendor_info', JSON.stringify(data.vendor));
+          localStorage.setItem('vendor', JSON.stringify(data.vendor));
+        }
+
+        // If registered supplier doesn't have a password yet, prompt them to create and confirm password
+        if (data.hasPassword === false || (data.vendor && data.vendor.hasPassword === false)) {
+          setStep('create_password');
+          setError('');
+          setSuccessMsg('Email verified! Please create and confirm your password to proceed to onboarding.');
+        } else {
+          window.location.href = needsOnboarding(data.vendor) ? '/vendor/onboarding' : '/vendor';
+        }
       } else {
-        setError(data.error || 'Invalid OTP');
+        setError(data.error || 'Invalid OTP code');
       }
     } catch (err: any) {
-      setError('Network error');
+      setError('Network error. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
+  const handleCreatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPassword || newPassword.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match. Please verify your confirm password.');
+      return;
+    }
+    setError('');
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem('token');
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const res = await fetch(`${getBaseUrl()}/api/vendor-auth`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ email, password: newPassword, action: 'set_password' })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+        }
+        if (data.vendor) {
+          localStorage.setItem('vendor_info', JSON.stringify(data.vendor));
+          localStorage.setItem('vendor', JSON.stringify(data.vendor));
+        }
+        window.location.href = '/vendor/onboarding';
+      } else {
+        setError(data.error || 'Failed to create password');
+      }
+    } catch (err: any) {
+      setError('Network error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !otp || !newPassword) return;
+    if (newPassword.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match. Please check your confirm password.');
+      return;
+    }
     setError('');
     setSuccessMsg('');
     setLoading(true);
@@ -150,26 +198,28 @@ export function Login() {
       
       const data = await res.json();
       if (res.ok) {
-        setSuccessMsg('Password updated successfully! You can now login.');
+        setSuccessMsg('Password updated successfully! You can now login with your password.');
         setLoginMethod('password');
         setStep('request');
         setPassword('');
         setNewPassword('');
+        setConfirmPassword('');
         setOtp('');
       } else {
         setError(data.error || 'Failed to reset password');
       }
     } catch (err: any) {
-      setError('Network error');
+      setError('Network error. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return;
     setError('');
-    setShowRegisterOption(false);
+    setNeedsPasswordSetup(false);
     setLoading(true);
 
     try {
@@ -186,17 +236,25 @@ export function Login() {
         localStorage.setItem('vendor', JSON.stringify(data.vendor));
         window.location.href = needsOnboarding(data.vendor) ? '/vendor/onboarding' : '/vendor';
       } else {
-        const errTxt = data.error || 'Invalid credentials';
-        setError(errTxt);
-        if (errTxt.toLowerCase().includes('not found')) {
-          setShowRegisterOption(true);
+        if (data.needsPasswordSetup) {
+          setNeedsPasswordSetup(true);
         }
+        setError(data.error || 'Invalid credentials');
       }
     } catch (err: any) {
-      setError('Network error');
+      setError('Network error. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  // Helper to trigger OTP flow for a registered user wanting to create password
+  const startPasswordSetup = () => {
+    setLoginMethod('otp');
+    setStep('request');
+    setError('');
+    setNeedsPasswordSetup(false);
+    setSuccessMsg('Enter your registered email to receive a verification code and create your password.');
   };
 
   return (
@@ -209,36 +267,36 @@ export function Login() {
         </div>
         
         {error && <div className="error-banner">{error}</div>}
-        {showRegisterOption && (
+        
+        {needsPasswordSetup && (
           <div style={{ backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '10px', padding: '16px', marginBottom: '16px', textAlign: 'center' }}>
-            <div style={{ fontWeight: 700, color: '#071330', fontSize: '0.92rem', marginBottom: '4px' }}>New Supplier Account</div>
-            <p style={{ margin: '0 0 12px 0', fontSize: '0.85rem', color: '#3b82f6', lineHeight: 1.4 }}>
-              No account was found for <strong>{email}</strong>. Would you like to register as a new supplier and complete your profile?
+            <div style={{ fontWeight: 700, color: '#071330', fontSize: '0.92rem', marginBottom: '4px' }}>Create Your Password</div>
+            <p style={{ margin: '0 0 12px 0', fontSize: '0.85rem', color: '#2563eb', lineHeight: 1.4 }}>
+              As a registered supplier, please verify your email via code to create and confirm your password.
             </p>
             <button 
               type="button" 
-              onClick={() => handleRegisterNew(email)}
-              style={{ width: '100%', padding: '10px 16px', backgroundColor: '#2563eb', color: '#fff', border: 'none', borderRadius: '7px', fontWeight: 700, fontSize: '0.88rem', cursor: 'pointer', transition: 'background 0.2s' }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#1d4ed8'}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
+              onClick={startPasswordSetup}
+              style={{ width: '100%', padding: '10px 16px', backgroundColor: '#2563eb', color: '#fff', border: 'none', borderRadius: '7px', fontWeight: 700, fontSize: '0.88rem', cursor: 'pointer' }}
             >
-              Register & Start Onboarding →
+              Verify & Create Password →
             </button>
           </div>
         )}
+
         {successMsg && <div className="error-banner" style={{ backgroundColor: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0', marginBottom: '16px', padding: '12px', borderRadius: '8px', fontSize: '0.9rem', textAlign: 'center' }}>{successMsg}</div>}
 
-        <div style={{ display: loginMethod === 'forgot_password' ? 'none' : 'flex', gap: '8px', marginBottom: '24px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '8px' }}>
+        <div style={{ display: loginMethod === 'forgot_password' || step === 'create_password' ? 'none' : 'flex', gap: '8px', marginBottom: '24px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '8px' }}>
           <button 
             type="button"
-            onClick={() => { setLoginMethod('otp'); setError(''); }}
+            onClick={() => { setLoginMethod('otp'); setError(''); setSuccessMsg(''); setStep('request'); setNeedsPasswordSetup(false); }}
             style={{ flex: 1, padding: '8px', borderRadius: '6px', border: 'none', background: loginMethod === 'otp' ? '#fff' : 'transparent', color: loginMethod === 'otp' ? '#0f172a' : '#64748b', fontWeight: loginMethod === 'otp' ? 600 : 400, boxShadow: loginMethod === 'otp' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', cursor: 'pointer', transition: 'all 0.2s' }}
           >
             OTP Login
           </button>
           <button 
             type="button"
-            onClick={() => { setLoginMethod('password'); setError(''); }}
+            onClick={() => { setLoginMethod('password'); setError(''); setSuccessMsg(''); setStep('request'); setNeedsPasswordSetup(false); }}
             style={{ flex: 1, padding: '8px', borderRadius: '6px', border: 'none', background: loginMethod === 'password' ? '#fff' : 'transparent', color: loginMethod === 'password' ? '#0f172a' : '#64748b', fontWeight: loginMethod === 'password' ? 600 : 400, boxShadow: loginMethod === 'password' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', cursor: 'pointer', transition: 'all 0.2s' }}
           >
             Password
@@ -268,7 +326,7 @@ export function Login() {
 
               <form onSubmit={handleRequestOTP}>
                 <div className="form-group">
-                  <label htmlFor="email">Email or Phone</label>
+                  <label htmlFor="email">Registered Email or Phone</label>
                   <input 
                     type="text" 
                     id="email" 
@@ -280,26 +338,26 @@ export function Login() {
                   />
                 </div>
             
-            <div style={{ textAlign: 'right', marginTop: '8px' }}>
-              <button type="button" onClick={() => { setLoginMethod('forgot_password'); setStep('request'); setError(''); setSuccessMsg(''); }} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 500 }}>
-                Forgot Password?
-              </button>
-            </div>
+                <div style={{ textAlign: 'right', marginTop: '8px' }}>
+                  <button type="button" onClick={() => { setLoginMethod('forgot_password'); setStep('request'); setError(''); setSuccessMsg(''); }} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 500 }}>
+                    Forgot Password?
+                  </button>
+                </div>
 
-            <button type="submit" className="primary-btn" disabled={loading || !email}>
-                  {loading ? 'Sending...' : 'Send Login Code'}
+                <button type="submit" className="primary-btn" disabled={loading || !email}>
+                  {loading ? 'Sending Code...' : 'Send Login Code'}
                 </button>
               </form>
             </>
-          ) : (
+          ) : step === 'verify' ? (
             <form onSubmit={handleVerifyOTP}>
               <div className="form-group">
-                <label htmlFor="otp" style={{textAlign: 'center'}}>Enter the 6-digit code</label>
+                <label htmlFor="otp" style={{textAlign: 'center'}}>Enter the 6-digit verification code</label>
                 
                 {previewUrl && (
                   <div style={{ textAlign: 'center', marginBottom: '16px' }}>
                     <a href={previewUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', fontSize: '0.85rem' }}>
-                      🔗 View OTP (Dev Mode)
+                      🔗 View Code (Dev Mode)
                     </a>
                   </div>
                 )}
@@ -318,7 +376,7 @@ export function Login() {
               </div>
               
               <button type="submit" className="primary-btn" disabled={loading || otp.length < 4}>
-                {loading ? 'Verifying...' : 'Verify & Login'}
+                {loading ? 'Verifying...' : 'Verify & Continue'}
               </button>
               
               <div style={{ textAlign: 'center', marginTop: '20px' }}>
@@ -327,12 +385,69 @@ export function Login() {
                 </button>
               </div>
             </form>
+          ) : (
+            /* create_password step for registered users */
+            <form onSubmit={handleCreatePassword}>
+              <h3 style={{ textAlign: 'center', marginBottom: '6px', fontSize: '1.2rem', color: '#0f172a' }}>
+                Create Your Password
+              </h3>
+              <p style={{ textAlign: 'center', marginBottom: '20px', fontSize: '0.85rem', color: '#64748b', lineHeight: 1.4 }}>
+                As a registered supplier, create and confirm your password for <strong>{email}</strong> to proceed to the onboarding form.
+              </p>
+
+              <div className="form-group">
+                <label htmlFor="create-new-password">Create Password</label>
+                <input 
+                  type="password" 
+                  id="create-new-password" 
+                  className="minimal-input" 
+                  placeholder="At least 6 characters" 
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required 
+                  minLength={6}
+                />
+              </div>
+
+              <div className="form-group" style={{ marginTop: '14px' }}>
+                <label htmlFor="create-confirm-password">Confirm Password</label>
+                <input 
+                  type="password" 
+                  id="create-confirm-password" 
+                  className="minimal-input" 
+                  placeholder="Re-enter your password" 
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required 
+                  minLength={6}
+                />
+              </div>
+
+              <button 
+                type="submit" 
+                className="primary-btn" 
+                disabled={loading || !newPassword || !confirmPassword || newPassword.length < 6}
+                style={{ marginTop: '24px' }}
+              >
+                {loading ? 'Saving...' : 'Save Password & Continue to Onboarding →'}
+              </button>
+
+              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <button 
+                  type="button" 
+                  onClick={() => { setStep('request'); setError(''); setSuccessMsg(''); }} 
+                  style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '0.85rem' }}
+                >
+                  ← Back to Login
+                </button>
+              </div>
+            </form>
           )
         ) : loginMethod === 'forgot_password' ? (
           step === 'request' ? (
             <form onSubmit={handleRequestOTP}>
               <h3 style={{ textAlign: 'center', marginBottom: '16px', fontSize: '1.2rem', color: '#0f172a' }}>Reset Password</h3>
-              <p style={{ textAlign: 'center', marginBottom: '24px', fontSize: '0.9rem', color: '#64748b' }}>Enter your email to receive a password reset code.</p>
+              <p style={{ textAlign: 'center', marginBottom: '24px', fontSize: '0.9rem', color: '#64748b' }}>Enter your registered email to receive a password reset code.</p>
               <div className="form-group">
                 <label htmlFor="reset-email">Email</label>
                 <input 
@@ -346,7 +461,7 @@ export function Login() {
                 />
               </div>
               <button type="submit" className="primary-btn" disabled={loading || !email}>
-                {loading ? 'Sending...' : 'Send Reset Code'}
+                {loading ? 'Sending Code...' : 'Send Reset Code'}
               </button>
               <div style={{ textAlign: 'center', marginTop: '20px' }}>
                 <button type="button" onClick={() => { setLoginMethod('password'); setError(''); setSuccessMsg(''); }} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '0.85rem' }}>
@@ -377,13 +492,27 @@ export function Login() {
                   type="password" 
                   id="new-password" 
                   className="minimal-input" 
-                  placeholder="Enter new password" 
+                  placeholder="Enter new password (min. 6 characters)" 
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   required 
+                  minLength={6}
                 />
               </div>
-              <button type="submit" className="primary-btn" disabled={loading || otp.length < 4 || !newPassword} style={{ marginTop: '24px' }}>
+              <div className="form-group" style={{ marginTop: '14px' }}>
+                <label htmlFor="reset-confirm-password">Confirm Password</label>
+                <input 
+                  type="password" 
+                  id="reset-confirm-password" 
+                  className="minimal-input" 
+                  placeholder="Re-enter new password" 
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required 
+                  minLength={6}
+                />
+              </div>
+              <button type="submit" className="primary-btn" disabled={loading || otp.length < 4 || !newPassword || !confirmPassword || newPassword.length < 6} style={{ marginTop: '24px' }}>
                 {loading ? 'Resetting...' : 'Reset Password'}
               </button>
               <div style={{ textAlign: 'center', marginTop: '20px' }}>
@@ -396,7 +525,7 @@ export function Login() {
         ) : (
           <form onSubmit={handlePasswordLogin}>
             <div className="form-group">
-              <label htmlFor="password-email">Email</label>
+              <label htmlFor="password-email">Registered Email</label>
               <input 
                 type="email" 
                 id="password-email" 
@@ -409,12 +538,21 @@ export function Login() {
             </div>
             
             <div className="form-group" style={{ marginTop: '16px' }}>
-              <label htmlFor="password">Password (Onboarding)</label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <label htmlFor="password">Password</label>
+                <button 
+                  type="button" 
+                  onClick={() => { setLoginMethod('forgot_password'); setStep('request'); setError(''); setSuccessMsg(''); }} 
+                  style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.8rem', padding: 0 }}
+                >
+                  Forgot?
+                </button>
+              </div>
               <input 
                 type="password" 
                 id="password" 
                 className="minimal-input" 
-                placeholder="First 3 chars of email + @26" 
+                placeholder="Enter your password" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required 
@@ -424,19 +562,18 @@ export function Login() {
             <button type="submit" className="primary-btn" disabled={loading || !email || !password} style={{ marginTop: '24px' }}>
               {loading ? 'Logging in...' : 'Login'}
             </button>
+
+            <div style={{ textAlign: 'center', marginTop: '18px', paddingTop: '14px', borderTop: '1px solid #f1f5f9' }}>
+              <button 
+                type="button" 
+                onClick={startPasswordSetup} 
+                style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.83rem', fontWeight: 600 }}
+              >
+                Registered supplier signing in for the first time? Create password →
+              </button>
+            </div>
           </form>
         )}
-
-        <div style={{ textAlign: 'center', marginTop: '24px', paddingTop: '16px', borderTop: '1px solid #e2e8f0' }}>
-          <span style={{ fontSize: '0.85rem', color: '#64748b' }}>New to ProcGen? </span>
-          <button
-            type="button"
-            onClick={() => handleRegisterNew(email)}
-            style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, padding: 0 }}
-          >
-            Register as New Supplier →
-          </button>
-        </div>
       </div>
     </div>
   );
