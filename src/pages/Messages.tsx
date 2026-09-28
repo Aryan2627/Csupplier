@@ -134,7 +134,7 @@ export function Messages() {
                   {event.title || event.refId}
                 </div>
                 <div style={{ fontSize: "0.8rem", color: "#64748b" }}>
-                  Client: {event.account || "ProcGen Org"}
+                  Client: {event.organization?.name || event.account || "ProcGen Org"}
                 </div>
               </div>
             ))
@@ -152,7 +152,7 @@ export function Messages() {
                 <User size={20} />
               </div>
               <div>
-                <div style={{ fontWeight: 700, color: "#0f172a", fontSize: "1rem" }}>{activeEvent.account || "ProcGen Client"}</div>
+                <div style={{ fontWeight: 700, color: "#0f172a", fontSize: "1rem" }}>{activeEvent.organization?.name || activeEvent.account || "ProcGen Client"}</div>
                 <div style={{ fontSize: "0.8rem", color: "#64748b" }}>Event: {activeEvent.title} ({activeEvent.refId})</div>
               </div>
             </div>
