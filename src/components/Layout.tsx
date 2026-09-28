@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, CalendarDays, Gavel, ShoppingBag,
   Settings as SettingsIcon, LogOut, Bell, ChevronRight,
-  Sparkles, Activity, Shield
+  Sparkles, Activity, Shield, MessageSquare
 } from "lucide-react";
 
 interface LayoutProps { children: React.ReactNode; }
@@ -31,6 +31,7 @@ export function Layout({ children }: LayoutProps) {
   const navItems = [
     { name: "Dashboard", path: "/vendor", icon: LayoutDashboard, desc: "Overview" },
     { name: "Sourcing Events", path: "/events", icon: CalendarDays, desc: "Active RFQs" },
+    { name: "Messages", path: "/messages", icon: MessageSquare, desc: "Client Chat" },
     { name: "My Bids", path: "/bids", icon: Gavel, desc: "Submitted" },
     { name: "Purchase Orders", path: "/orders", icon: ShoppingBag, desc: "Orders" },
     { name: "Settings", path: "/settings", icon: SettingsIcon, desc: "Profile" },
@@ -39,6 +40,7 @@ export function Layout({ children }: LayoutProps) {
   const pageTitles: Record<string, { title: string; sub: string }> = {
     "/vendor": { title: "Dashboard", sub: "Your procurement overview" },
     "/events": { title: "Sourcing Events", sub: "Browse and respond to RFQs & Auctions" },
+    "/messages": { title: "Messages", sub: "Secure client communications" },
     "/bids": { title: "My Bids", sub: "Track your submitted bids" },
     "/orders": { title: "Purchase Orders", sub: "Manage your awarded orders" },
     "/settings": { title: "Settings & Profile", sub: "Manage your vendor account" },
