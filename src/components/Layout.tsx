@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, CalendarDays, Gavel, ShoppingBag, Settings as SettingsIcon, LogOut, Bell, ClipboardList } from "lucide-react";
+import { LayoutDashboard, CalendarDays, Gavel, ShoppingBag, Settings as SettingsIcon, LogOut, Bell, ClipboardList, MessageSquare } from "lucide-react";
 import "./Layout.css";
 
 interface LayoutProps { children: React.ReactNode; }
@@ -20,6 +20,7 @@ export function Layout({ children }: LayoutProps) {
   const navItems = [
     { name: "Dashboard", path: "/vendor", icon: LayoutDashboard },
     { name: "Events", path: "/events", icon: CalendarDays },
+    { name: "Messages", path: "/messages", icon: MessageSquare },
     { name: "Active Bids", path: "/bids", icon: Gavel },
     { name: "Purchase Orders", path: "/orders", icon: ShoppingBag },
     { name: "Onboarding", path: "/vendor/onboarding", icon: ClipboardList },
@@ -29,6 +30,7 @@ export function Layout({ children }: LayoutProps) {
   const pageTitles: Record<string, string> = {
     "/vendor": "Dashboard", "/dashboard": "Dashboard",
     "/events": "Sourcing Events", "/bids": "Active Bids",
+    "/messages": "Messages & Chat",
     "/orders": "Purchase Orders", "/settings": "Settings & Profile",
     "/vendor/onboarding": "Supplier Onboarding", "/onboarding": "Supplier Onboarding",
   };
