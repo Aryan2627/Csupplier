@@ -1,5 +1,5 @@
-import React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate, Navigate } from "react-router-dom";
 import { LayoutDashboard, CalendarDays, Gavel, ShoppingBag, Settings as SettingsIcon, LogOut, Bell, ClipboardList, MessageSquare } from "lucide-react";
 import "./Layout.css";
 
@@ -8,16 +8,52 @@ interface LayoutProps { children: React.ReactNode; }
 export function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const [vendorName, setVendorName] = React.useState("Supplier");
+  const [vendorName, setVendorName] = useState("Supplier");
+  const [isChecking, setIsChecking] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [requiresOnboarding, setRequiresOnboarding] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     try {
+      const token = localStorage.getItem("token");
       const v = localStorage.getItem("vendor") || localStorage.getItem("vendor_info");
-      if (v) { const p = JSON.parse(v); if (p.name) setVendorName(p.name); }
-    } catch(e) {}
-  }, []);
+      
+      if (!token || !v) {
+        setIsAuthenticated(false);
+        setIsChecking(false);
+        return;
+      }
+      
+      setIsAuthenticated(true);
+      const vendor = JSON.parse(v);
+      if (vendor.name) setVendorName(vendor.name);
+      
+      const s = (vendor.status || '').toLowerCase();
+      const isCompleted = s === 'active' || s === 'approved' || s === 'onboarded' || s === 'joined' || s === 'pending review' || s === 'approval pending';
+      
+      setRequiresOnboarding(!isCompleted);
+    } catch(e) {
+      setIsAuthenticated(false);
+    } finally {
+      setIsChecking(false);
+    }
+  }, [location.pathname]);
 
-  const navItems = [
+  if (isChecking) {
+    return <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center", backgroundColor: "#f0f4f8" }}>Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  const isOnboardingRoute = location.pathname === "/vendor/onboarding" || location.pathname === "/onboarding";
+  
+  if (requiresOnboarding && !isOnboardingRoute) {
+    return <Navigate to="/vendor/onboarding" replace />;
+  }
+
+  let navItems = [
     { name: "Dashboard", path: "/vendor", icon: LayoutDashboard },
     { name: "Events", path: "/events", icon: CalendarDays },
     { name: "Messages", path: "/messages", icon: MessageSquare },
@@ -26,6 +62,11 @@ export function Layout({ children }: LayoutProps) {
     { name: "Onboarding", path: "/vendor/onboarding", icon: ClipboardList },
     { name: "Settings", path: "/settings", icon: SettingsIcon },
   ];
+
+  if (requiresOnboarding) {
+    // Only show onboarding if they haven't completed it
+    navItems = navItems.filter(item => item.name === "Onboarding");
+  }
 
   const pageTitles: Record<string, string> = {
     "/vendor": "Dashboard", "/dashboard": "Dashboard",
