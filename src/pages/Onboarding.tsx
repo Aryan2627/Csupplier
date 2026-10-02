@@ -122,7 +122,7 @@ export function Onboarding() {
       
       if (res.ok) {
         const data = await res.json().catch(() => null);
-        const finalVendor = (data && data.vendor) ? { ...data.vendor, status: 'Onboarded' } : { ...(vendorInfo || {}), ...formData, status: 'Onboarded' };
+        const finalVendor = (data && data.vendor) ? { ...data.vendor, status: data.vendor.status || 'Waiting for Approval' } : { ...(vendorInfo || {}), ...formData, status: 'Waiting for Approval' };
         localStorage.setItem('vendor_info', JSON.stringify(finalVendor));
         localStorage.setItem('vendor', JSON.stringify(finalVendor));
         setVendorInfo(finalVendor);
@@ -176,7 +176,7 @@ export function Onboarding() {
         {error && <div style={{ padding: '12px', backgroundColor: '#fee2e2', color: '#b91c1c', borderRadius: '8px', marginBottom: '24px' }}>{error}</div>}
 
         {/* 15-Day Registration Validity Notice */}
-        {!(success || vendorInfo?.status === 'Approval Pending' || vendorInfo?.status === 'Pending Review' || vendorInfo?.status === 'Onboarded' || vendorInfo?.status === 'Joined') && (
+        {!(success || ['approval pending', 'pending review', 'waiting for approval', 'onboarded', 'active', 'approved', 'joined'].includes((vendorInfo?.status || '').toLowerCase())) && (
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -213,17 +213,33 @@ export function Onboarding() {
           </div>
         )}
         
-        {success || vendorInfo?.status === 'Approval Pending' || vendorInfo?.status === 'Pending Review' || vendorInfo?.status === 'Onboarded' || vendorInfo?.status === 'Joined' ? (
-          <div style={{ padding: '36px', backgroundColor: '#ecfdf5', borderRadius: '16px', border: '1px solid #a7f3d0', textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.03)' }}>
-            <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎉</div>
-            <h2 style={{ color: '#065f46', marginBottom: '8px', fontSize: '1.5rem', fontWeight: 700 }}>Onboarding Profile Completed!</h2>
-            <p style={{ color: '#047857', fontSize: '0.95rem', marginBottom: '24px' }}>Your detailed profile and company information have been saved and verified.</p>
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-              <button onClick={() => navigate('/vendor')} style={{ padding: '12px 24px', backgroundColor: '#059669', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}>
-                Go to Vendor Dashboard →
-              </button>
-            </div>
-          </div>
+        {success || ['approval pending', 'pending review', 'waiting for approval', 'onboarded', 'active', 'approved', 'joined'].includes((vendorInfo?.status || '').toLowerCase()) ? (
+          (() => {
+            const st = (vendorInfo?.status || '').toLowerCase();
+            const isApproved = st === 'active' || st === 'approved' || st === 'joined';
+            return (
+              <div style={{ padding: '40px 32px', backgroundColor: isApproved ? '#ecfdf5' : '#fffbe6', borderRadius: '16px', border: `1px solid ${isApproved ? '#a7f3d0' : '#ffe58f'}`, textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.03)' }}>
+                <div style={{ fontSize: '48px', marginBottom: '16px' }}>{isApproved ? '🎉' : '⏳'}</div>
+                <div style={{ display: 'inline-block', padding: '4px 14px', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 700, backgroundColor: isApproved ? '#dcfce7' : '#fef3c7', color: isApproved ? '#15803d' : '#b45309', border: `1px solid ${isApproved ? '#86efac' : '#fde68a'}`, marginBottom: '16px' }}>
+                  {isApproved ? 'Approved by Client' : 'Waiting for Approval'}
+                </div>
+                <h2 style={{ color: isApproved ? '#065f46' : '#78350f', marginBottom: '8px', fontSize: '1.5rem', fontWeight: 700 }}>
+                  {isApproved ? 'Onboarding Approved!' : 'Waiting for Client Approval'}
+                </h2>
+                <p style={{ color: isApproved ? '#047857' : '#92400e', fontSize: '0.95rem', marginBottom: '24px', maxWidth: '600px', margin: '0 auto 24px auto', lineHeight: 1.5 }}>
+                  {isApproved 
+                    ? 'Your onboarding application has been reviewed and approved by the client. You have full access to all sourcing events and purchase orders.'
+                    : 'Your onboarding form is complete and has been submitted. Your application is currently waiting for approval from the client.'
+                  }
+                </p>
+                <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                  <button onClick={() => navigate('/vendor')} style={{ padding: '12px 24px', backgroundColor: isApproved ? '#059669' : '#d97706', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}>
+                    Go to Vendor Dashboard →
+                  </button>
+                </div>
+              </div>
+            );
+          })()
         ) : (
           <form onSubmit={handleSubmit} style={{ backgroundColor: '#fff', padding: '32px', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '20px' }}>
             

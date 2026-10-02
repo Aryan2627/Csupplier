@@ -9,6 +9,7 @@ export function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [vendorName, setVendorName] = useState("Supplier");
+  const [vendorStatus, setVendorStatus] = useState("");
   const [isChecking, setIsChecking] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [requiresOnboarding, setRequiresOnboarding] = useState(false);
@@ -29,7 +30,10 @@ export function Layout({ children }: LayoutProps) {
       if (vendor.name) setVendorName(vendor.name);
       
       const s = (vendor.status || '').toLowerCase();
-      const isCompleted = s === 'active' || s === 'approved' || s === 'onboarded' || s === 'joined' || s === 'pending review' || s === 'approval pending';
+      setVendorStatus(s);
+      const isApproved = s === 'active' || s === 'approved' || s === 'joined';
+      const isWaitingApproval = s === 'approval pending' || s === 'pending review' || s === 'waiting for approval' || s === 'onboarded';
+      const isCompleted = isApproved || isWaitingApproval;
       
       setRequiresOnboarding(!isCompleted);
     } catch(e) {
@@ -124,6 +128,22 @@ export function Layout({ children }: LayoutProps) {
               <Bell size={20} />
             </button>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              {vendorStatus && (
+                <span style={{
+                  padding: "4px 12px",
+                  borderRadius: "20px",
+                  fontSize: "0.75rem",
+                  fontWeight: 700,
+                  backgroundColor: (vendorStatus === 'active' || vendorStatus === 'approved' || vendorStatus === 'joined') ? "#dcfce7" : (vendorStatus === 'approval pending' || vendorStatus === 'pending review' || vendorStatus === 'waiting for approval' || vendorStatus === 'onboarded') ? "#fffbe6" : "#fee2e2",
+                  color: (vendorStatus === 'active' || vendorStatus === 'approved' || vendorStatus === 'joined') ? "#15803d" : (vendorStatus === 'approval pending' || vendorStatus === 'pending review' || vendorStatus === 'waiting for approval' || vendorStatus === 'onboarded') ? "#b45309" : "#b91c1c",
+                  border: `1px solid ${(vendorStatus === 'active' || vendorStatus === 'approved' || vendorStatus === 'joined') ? "#86efac" : (vendorStatus === 'approval pending' || vendorStatus === 'pending review' || vendorStatus === 'waiting for approval' || vendorStatus === 'onboarded') ? "#fde68a" : "#fca5a5"}`,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px"
+                }}>
+                  {(vendorStatus === 'active' || vendorStatus === 'approved' || vendorStatus === 'joined') ? "✓ Approved" : (vendorStatus === 'approval pending' || vendorStatus === 'pending review' || vendorStatus === 'waiting for approval' || vendorStatus === 'onboarded') ? "⏳ Waiting for Approval" : "⚠️ Pending Onboarding"}
+                </span>
+              )}
               <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#071330", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: "0.9rem" }}>
                 {vendorName.charAt(0).toUpperCase()}
               </div>

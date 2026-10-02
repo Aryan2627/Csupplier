@@ -43,7 +43,12 @@ export function Settings() {
   if (!vendor) return <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "60vh", color: "#64748b" }}>Loading profile...</div>;
 
   const tags = (() => { try { return JSON.parse(vendor.tags || "[]"); } catch { return []; } })();
-  const statusColor = (s: string) => s === "Active" ? { bg: "#dcfce7", color: "#15803d" } : s?.includes("Pending") ? { bg: "#fef3c7", color: "#b45309" } : { bg: "#f1f5f9", color: "#475569" };
+  const statusColor = (s: string) => {
+    const st = (s || "").toLowerCase();
+    if (st === "active" || st === "approved" || st === "joined") return { bg: "#dcfce7", color: "#15803d", label: "Approved" };
+    if (st === "approval pending" || st === "pending review" || st === "waiting for approval" || st === "onboarded") return { bg: "#fffbe6", color: "#b45309", label: "Waiting for Approval" };
+    return { bg: "#fee2e2", color: "#b91c1c", label: s || "Pending Onboarding" };
+  };
   const sc = statusColor(vendor.status || "Pending Onboarding");
 
   const handleSave = async (e: React.FormEvent) => {
@@ -174,7 +179,7 @@ export function Settings() {
               <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
                 {[
                   { label: "Vendor Type", value: formData.type || "Standard Vendor" },
-                  { label: "Status", value: vendor.status || "Pending Onboarding", badge: sc },
+                  { label: "Status", value: sc.label, badge: sc },
                   { label: "Trade License", value: formData.tradeLicense || "Not Provided" },
                   { label: "Tax ID (VAT)", value: formData.taxId || "Not Provided" },
                 ].map((row, i) => (

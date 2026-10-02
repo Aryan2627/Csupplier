@@ -49,8 +49,10 @@ export function Dashboard() {
   const now = new Date().getTime();
   const activeEvents = recentEvents.filter(e => !e.endTime || new Date(e.endTime).getTime() > now);
 
-  const vendorStatus = (vendor.status || "").toLowerCase();
-  const needsOnboarding = !(vendorStatus === "active" || vendorStatus === "approved" || vendorStatus === "onboarded" || vendorStatus === "joined");
+  const vendorStatus = (vendor?.status || "").toLowerCase();
+  const isApproved = vendorStatus === "active" || vendorStatus === "approved" || vendorStatus === "joined";
+  const isWaitingApproval = vendorStatus === "approval pending" || vendorStatus === "pending review" || vendorStatus === "waiting for approval" || vendorStatus === "onboarded";
+  const needsOnboarding = !isApproved && !isWaitingApproval;
 
   const stats = [
     { label: "Active Invitations", value: activeEvents.length, icon: <Calendar size={22} color="#2563eb" />, bg: "#eff6ff", border: "#bfdbfe", textColor: "#071330" },
@@ -70,7 +72,7 @@ export function Dashboard() {
     <div style={{ minHeight: "100vh", backgroundColor: "#f0f4f8", fontFamily: "system-ui, sans-serif" }}>
       <div style={{ backgroundColor: "#071330", padding: "32px" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <h1 style={{ margin: 0, fontSize: "1.8rem", fontWeight: 700, color: "#fff", letterSpacing: "-0.5px" }}>Welcome back, {vendor.name || "Supplier"}!</h1>
+          <h1 style={{ margin: 0, fontSize: "1.8rem", fontWeight: 700, color: "#fff", letterSpacing: "-0.5px" }}>Welcome back, {vendor?.name || "Supplier"}!</h1>
           <p style={{ margin: "6px 0 0 0", color: "#bfdbfe", fontSize: "0.95rem" }}>Here is your procurement activity at a glance.</p>
         </div>
       </div>
@@ -84,6 +86,23 @@ export function Dashboard() {
             </div>
             <button onClick={() => navigate("/vendor/onboarding")} style={{ padding: "10px 20px", backgroundColor: "#d48806", color: "#fff", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "0.875rem", cursor: "pointer", whiteSpace: "nowrap" as const, flexShrink: 0 }}>
               Complete Onboarding Now →
+            </button>
+          </div>
+        )}
+
+        {isWaitingApproval && (
+          <div style={{ marginBottom: "24px", padding: "20px 24px", backgroundColor: "#fffbe6", border: "1px solid #ffe58f", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", boxShadow: "0 2px 6px rgba(0,0,0,0.03)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              <div style={{ width: "42px", height: "42px", borderRadius: "10px", backgroundColor: "#fef3c7", border: "1px solid #fde68a", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.3rem", flexShrink: 0 }}>
+                ⏳
+              </div>
+              <div>
+                <div style={{ fontWeight: 700, color: "#b45309", fontSize: "1rem", marginBottom: "3px" }}>Waiting for Client Approval</div>
+                <div style={{ fontSize: "0.88rem", color: "#92400e" }}>Your onboarding form is complete and has been submitted. Your application is currently waiting for approval from the client.</div>
+              </div>
+            </div>
+            <button onClick={() => navigate("/vendor/onboarding")} style={{ padding: "10px 18px", backgroundColor: "#ffffff", color: "#b45309", border: "1px solid #fde68a", borderRadius: "8px", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer", whiteSpace: "nowrap" as const, flexShrink: 0 }}>
+              View Onboarding Status →
             </button>
           </div>
         )}

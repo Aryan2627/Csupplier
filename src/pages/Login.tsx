@@ -20,7 +20,7 @@ export function Login() {
   const needsOnboarding = (vendor: any) => {
     if (!vendor) return true;
     const s = (vendor.status || '').toLowerCase();
-    const isCompleted = s === 'active' || s === 'approved' || s === 'onboarded' || s === 'joined' || s === 'pending review' || s === 'approval pending';
+    const isCompleted = s === 'active' || s === 'approved' || s === 'onboarded' || s === 'joined' || s === 'pending review' || s === 'approval pending' || s === 'waiting for approval';
     return !isCompleted;
   };
 
