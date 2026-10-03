@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FileText, CheckCircle2, ShoppingBag, TrendingUp, ArrowRight, Calendar, Clock } from "lucide-react";
+import { ValidityTimer } from "../components/ValidityTimer";
 
 export function Dashboard() {
   const navigate = useNavigate();
@@ -79,14 +80,17 @@ export function Dashboard() {
 
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "32px" }}>
         {needsOnboarding && (
-          <div style={{ marginBottom: "24px", padding: "20px 24px", backgroundColor: "#fffbe6", border: "1px solid #ffe58f", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", boxShadow: "0 2px 6px rgba(0,0,0,0.03)" }}>
-            <div>
-              <div style={{ fontWeight: 700, color: "#d48806", fontSize: "1rem", marginBottom: "4px" }}>⚠️ Onboarding Profile Incomplete</div>
-              <div style={{ fontSize: "0.88rem", color: "#8c6b00" }}>Please complete your official supplier registration form to participate in sourcing events and receive purchase orders.</div>
+          <div style={{ marginBottom: "24px" }}>
+            <ValidityTimer createdAt={vendor?.createdAt} status={vendor?.status} />
+            <div style={{ padding: "16px 20px", backgroundColor: "#fffbe6", border: "1px solid #ffe58f", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", marginTop: "-12px", boxShadow: "0 2px 6px rgba(0,0,0,0.03)" }}>
+              <div>
+                <div style={{ fontWeight: 700, color: "#d48806", fontSize: "0.95rem", marginBottom: "2px" }}>⚠️ Onboarding Profile Incomplete</div>
+                <div style={{ fontSize: "0.85rem", color: "#8c6b00" }}>Please complete your official supplier registration form to participate in sourcing events and receive purchase orders.</div>
+              </div>
+              <button onClick={() => navigate("/vendor/onboarding")} style={{ padding: "10px 20px", backgroundColor: "#d48806", color: "#fff", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "0.875rem", cursor: "pointer", whiteSpace: "nowrap" as const, flexShrink: 0 }}>
+                Complete Onboarding Now →
+              </button>
             </div>
-            <button onClick={() => navigate("/vendor/onboarding")} style={{ padding: "10px 20px", backgroundColor: "#d48806", color: "#fff", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "0.875rem", cursor: "pointer", whiteSpace: "nowrap" as const, flexShrink: 0 }}>
-              Complete Onboarding Now →
-            </button>
           </div>
         )}
 
